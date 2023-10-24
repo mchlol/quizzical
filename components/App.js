@@ -18,7 +18,7 @@ export default function App() {
 
         setLoading(true);
 
-        axios.get('https://opentdb.com/api.php?amount=5&category=9&type=multiple')
+        axios.get('https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple')
         .then (res => {
             setQuestions(res.data.results);
             setLoading(false);
@@ -31,7 +31,7 @@ export default function App() {
     },[]); 
 
     return (
-        <main>
+        <main className="flex-centered">
             {
                 loading
                 ? <p className="flex-centered">Loading</p>
