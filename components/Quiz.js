@@ -13,6 +13,7 @@ export default function Quiz(props) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        console.log(e);
     }
 
     // test child component returning info to the parent - passed as onClick 
@@ -22,15 +23,10 @@ export default function Quiz(props) {
     }
 
     function createElements(objs) {
-        // loop over the objects
-        // create a Question component for each one
-        // add a key 
-        // add a questions prop that passes the whole object eg questions[0]
-        // add a callback (phone home)
-        // console.log('Quiz: objs: ',objs);
 
-        const elements = objs.map(obj => <Question key={nanoid()} questions={obj} phoneHome={phoneHome} />
-        )
+        const elements = objs.map( obj => {
+        return <Question key={nanoid()} questions={obj} phoneHome={phoneHome} />
+    })
 
         return elements;
     }
