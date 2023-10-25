@@ -2638,7 +2638,7 @@ function App() {
         error = _React$useState6[0],
         setError = _React$useState6[1];
 
-    // get the questions with axios
+    // get the questions from api with axios
 
 
     _react2.default.useEffect(function () {
@@ -4477,14 +4477,19 @@ function Question(props) {
         answers = _React$useState2[0],
         setAnswers = _React$useState2[1];
 
+    var _React$useState3 = _react2.default.useState(null),
+        _React$useState4 = _slicedToArray(_React$useState3, 2),
+        selected = _React$useState4[0],
+        setSelected = _React$useState4[1];
+
     _react2.default.useEffect(function () {
         setAnswers(shuffleAnswers(props.questions.incorrect_answers, props.questions.correct_answer));
     }, []);
 
     function shuffleAnswers(incorrectArr, correct) {
         // get the array of incorrect answers and the correct answers
-        // get a random number from 0 - 4 
-        // use toSpliced to insert correct answers at index random
+        // get a random number from 0 - 4
+        // use toSpliced to insert correct answer at the random index
         var randomNum = Math.floor(Math.random() * 4);
         var newArr = incorrectArr.toSpliced(randomNum, 0, correct);
         var object = {
@@ -4497,12 +4502,14 @@ function Question(props) {
     }
 
     function getAnswerElements(answers) {
-        for (var key in answers) {
-            console.log(key + ": " + answers[key]);
-        }
+        var correct = answers.correctAnswer;
+        var array = answers.array;
+        console.log(correct, array);
     }
 
     getAnswerElements(answers);
+
+    // ? should consider making an 'answer' component
 
     return _react2.default.createElement(
         "div",
@@ -4517,7 +4524,9 @@ function Question(props) {
             { className: "answers-container" },
             _react2.default.createElement(
                 "button",
-                { key: (0, _nanoid.nanoid)(), className: "btn answer-btn selected" },
+                { onClick: function onClick() {
+                        return props.phoneHome(question.correct_answer);
+                    }, key: (0, _nanoid.nanoid)(), className: "btn answer-btn selected" },
                 (0, _htmlEntities.decode)(question.correct_answer, { level: 'html5' })
             ),
             _react2.default.createElement(
@@ -4550,6 +4559,9 @@ function Question(props) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 exports.default = Quiz;
 
 var _react = __webpack_require__(3);
@@ -4565,17 +4577,41 @@ var _nanoid = __webpack_require__(21);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Quiz(props) {
+    var _React$useState = _react2.default.useState(props.questions),
+        _React$useState2 = _slicedToArray(_React$useState, 2),
+        questions = _React$useState2[0],
+        setQuestions = _React$useState2[1];
+    // ? value on mount and setter value are the same, doesn't seem right
 
-    var questions = props.questions;
+
+    _react2.default.useEffect(function () {
+        setQuestions(props.questions);
+        // questions here is an array of objects as returned from the API
+    }, []);
+
+    // test child component returning info to the parent - passed as onClick 
+    function phoneHome(arg) {
+        console.log('Passed back from question component: ', arg);
+        // * this could be used to return a boolean if the user clicked the right answer
+    }
+
+    // create five question components with key, questions prop and function callback prop to send the results back from the question components to the quiz component to check if user is correct
+
+    function createElements(objs) {
+        // loop over the objects
+        // create a Question component for each one
+        // add a key 
+        // add a questions prop that passes the whole object eg questions[0]
+        // add a callback (phone home)
+        console.log('objs: ', objs);
+    }
+
+    createElements(questions);
 
     return _react2.default.createElement(
         "div",
         { className: "questions-container flex-centered" },
-        _react2.default.createElement(_Question2.default, { key: (0, _nanoid.nanoid)(), questions: questions[0] }),
-        _react2.default.createElement(_Question2.default, { key: (0, _nanoid.nanoid)(), questions: questions[1] }),
-        _react2.default.createElement(_Question2.default, { key: (0, _nanoid.nanoid)(), questions: questions[2] }),
-        _react2.default.createElement(_Question2.default, { key: (0, _nanoid.nanoid)(), questions: questions[3] }),
-        _react2.default.createElement(_Question2.default, { key: (0, _nanoid.nanoid)(), questions: questions[4] }),
+        _react2.default.createElement(_Question2.default, { key: (0, _nanoid.nanoid)(), questions: questions[0], phoneHome: phoneHome }),
         _react2.default.createElement("br", null),
         _react2.default.createElement(
             "button",

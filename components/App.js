@@ -13,7 +13,7 @@ export default function App() {
     const [error, setError] = React.useState(null);
 
 
-    // get the questions with axios
+    // get the questions from api with axios
     React.useEffect( () => {
 
         setLoading(true);
