@@ -1,11 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Karla:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Karla:wght@700&display=swap');
 
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: #293264;
+    background-color: #F5F7FB;
 }
 
 .flex-centered {
@@ -15,13 +17,56 @@ body {
     align-items: center;
 }
 
+.questions-container {
+    max-width: 550px;
+    margin: 2em 1em;
+}
+
 hr {
     border: none;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid #DBDEF0;
     width: 100%;
     margin: 1em 0;
 }
 
 h3.question {
     font-family: 'Karla', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+}
+
+.answers-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+
+.answer-btn {
+    background-color: inherit;
+    color: #293264;
+    border: 1px solid #4D5B9E;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 0.5em 1em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.action-btn {
+    border: none;
+    background-color: #4D5B9E;
+    color: #F5F7FB;
+    font-weight: 600;
+    padding: 1em 1.5em;
+
+}
+
+.answer-btn.selected {
+    background-color: #D6DBF5;
 }
