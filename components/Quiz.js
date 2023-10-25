@@ -11,13 +11,15 @@ export default function Quiz(props) {
         // questions here is an array of objects as returned from the API
     },[]);
 
-    // test child component returning info to the parent - passed as onClick 
-    function phoneHome(arg) {
-        console.log('Passed back from question component: ',arg);
-        // * this could be used to return a boolean if the user clicked the right answer
+    function handleSubmit(e) {
+        e.preventDefault();
     }
 
-    // create five question components with key, questions prop and function callback prop to send the results back from the question components to the quiz component to check if user is correct
+    // test child component returning info to the parent - passed as onClick 
+    function phoneHome(arg) {
+        console.log('Phoned home : ',arg);
+        // * this could be used to return a boolean if the user clicked the right answer
+    }
 
     function createElements(objs) {
         // loop over the objects
@@ -25,18 +27,23 @@ export default function Quiz(props) {
         // add a key 
         // add a questions prop that passes the whole object eg questions[0]
         // add a callback (phone home)
-        console.log('objs: ',objs)
+        // console.log('Quiz: objs: ',objs);
+
+        const elements = objs.map(obj => <Question key={nanoid()} questions={obj} phoneHome={phoneHome} />
+        )
+
+        return elements;
     }
 
-    createElements(questions);
+    const elements = createElements(questions);
 
     return (
 
-        <div className="questions-container flex-centered">
-            <Question key={nanoid()} questions={questions[0]} phoneHome={phoneHome} />
+        <form className="questions-container flex-centered"
+        onSubmit={handleSubmit}>
+            {elements}
             <br />
             <button className="btn action-btn">Check answers</button>
-        </div>
-        
+        </form>
     )
 }

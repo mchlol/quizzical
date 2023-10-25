@@ -4465,85 +4465,73 @@ var _htmlEntities = __webpack_require__(56);
 
 var _nanoid = __webpack_require__(21);
 
+var _Answer = __webpack_require__(72);
+
+var _Answer2 = _interopRequireDefault(_Answer);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Question(props) {
 
-    var question = props.questions;
+    var question = props.questions.question;
     var correctAnswer = props.questions.correct_answer;
 
     var _React$useState = _react2.default.useState([]),
         _React$useState2 = _slicedToArray(_React$useState, 2),
         answers = _React$useState2[0],
         setAnswers = _React$useState2[1];
-
-    var _React$useState3 = _react2.default.useState(null),
-        _React$useState4 = _slicedToArray(_React$useState3, 2),
-        selected = _React$useState4[0],
-        setSelected = _React$useState4[1];
-
-    _react2.default.useEffect(function () {
-        setAnswers(shuffleAnswers(props.questions.incorrect_answers, props.questions.correct_answer));
-    }, []);
+    // const [selected, setSelected] = React.useState(null);
 
     function shuffleAnswers(incorrectArr, correct) {
         // get the array of incorrect answers and the correct answers
         // get a random number from 0 - 4
         // use toSpliced to insert correct answer at the random index
-        var randomNum = Math.floor(Math.random() * 4);
-        var newArr = incorrectArr.toSpliced(randomNum, 0, correct);
-        var object = {
-            correctIndex: randomNum,
-            correctAnswer: correctAnswer,
-            array: newArr
-        };
+        var correctIndex = Math.floor(Math.random() * 4);
+        var newArr = incorrectArr.toSpliced(correctIndex, 0, correct);
+        // const object = {
+        //     correctIndex: correctIndex,
+        //     correctAnswer: correctAnswer,
+        //     array: newArr
+        // };
 
-        return object;
+        // return object;
+        return newArr;
     }
 
-    function getAnswerElements(answers) {
-        var correct = answers.correctAnswer;
-        var array = answers.array;
-        console.log(correct, array);
+    _react2.default.useEffect(function () {
+        var shuffled = shuffleAnswers(props.questions.incorrect_answers, correctAnswer);
+        setAnswers(shuffled);
+    }, []);
+
+    function decodeText(text) {
+        return (0, _htmlEntities.decode)(text, { level: 'html5' });
     }
 
-    getAnswerElements(answers);
+    function createElements(arr) {
+        var els = arr.map(function (item) {
+            return _react2.default.createElement(_Answer2.default, { key: (0, _nanoid.nanoid)(), value: item, phoneHome: function phoneHome() {
+                    return props.phoneHome(item);
+                } });
+        });
+        return els;
+    }
 
-    // ? should consider making an 'answer' component
+    var elements = createElements(answers);
+
+    console.log('Question props: ', props);
 
     return _react2.default.createElement(
-        "div",
-        { className: "flex-centered" },
+        "label",
+        { key: (0, _nanoid.nanoid)(), className: "flex-centered", htmlFor: "question1" },
         _react2.default.createElement(
             "h3",
             { className: "question" },
-            (0, _htmlEntities.decode)(question.question, { level: 'html5' })
+            decodeText(question)
         ),
         _react2.default.createElement(
             "div",
             { className: "answers-container" },
-            _react2.default.createElement(
-                "button",
-                { onClick: function onClick() {
-                        return props.phoneHome(question.correct_answer);
-                    }, key: (0, _nanoid.nanoid)(), className: "btn answer-btn selected" },
-                (0, _htmlEntities.decode)(question.correct_answer, { level: 'html5' })
-            ),
-            _react2.default.createElement(
-                "button",
-                { key: (0, _nanoid.nanoid)(), className: "btn answer-btn" },
-                (0, _htmlEntities.decode)(question.incorrect_answers[0], { level: 'html5' })
-            ),
-            _react2.default.createElement(
-                "button",
-                { key: (0, _nanoid.nanoid)(), className: "btn answer-btn" },
-                (0, _htmlEntities.decode)(question.incorrect_answers[1], { level: 'html5' })
-            ),
-            _react2.default.createElement(
-                "button",
-                { key: (0, _nanoid.nanoid)(), className: "btn answer-btn" },
-                (0, _htmlEntities.decode)(question.incorrect_answers[2], { level: 'html5' })
-            )
+            elements
         ),
         _react2.default.createElement("hr", null)
     );
@@ -4589,13 +4577,15 @@ function Quiz(props) {
         // questions here is an array of objects as returned from the API
     }, []);
 
-    // test child component returning info to the parent - passed as onClick 
-    function phoneHome(arg) {
-        console.log('Passed back from question component: ', arg);
-        // * this could be used to return a boolean if the user clicked the right answer
+    function handleSubmit(e) {
+        e.preventDefault();
     }
 
-    // create five question components with key, questions prop and function callback prop to send the results back from the question components to the quiz component to check if user is correct
+    // test child component returning info to the parent - passed as onClick 
+    function phoneHome(arg) {
+        console.log('Phoned home : ', arg);
+        // * this could be used to return a boolean if the user clicked the right answer
+    }
 
     function createElements(objs) {
         // loop over the objects
@@ -4603,15 +4593,22 @@ function Quiz(props) {
         // add a key 
         // add a questions prop that passes the whole object eg questions[0]
         // add a callback (phone home)
-        console.log('objs: ', objs);
+        // console.log('Quiz: objs: ',objs);
+
+        var elements = objs.map(function (obj) {
+            return _react2.default.createElement(_Question2.default, { key: (0, _nanoid.nanoid)(), questions: obj, phoneHome: phoneHome });
+        });
+
+        return elements;
     }
 
-    createElements(questions);
+    var elements = createElements(questions);
 
     return _react2.default.createElement(
-        "div",
-        { className: "questions-container flex-centered" },
-        _react2.default.createElement(_Question2.default, { key: (0, _nanoid.nanoid)(), questions: questions[0], phoneHome: phoneHome }),
+        "form",
+        { className: "questions-container flex-centered",
+            onSubmit: handleSubmit },
+        elements,
         _react2.default.createElement("br", null),
         _react2.default.createElement(
             "button",
@@ -36947,6 +36944,41 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = Answer;
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _htmlEntities = __webpack_require__(56);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Answer(props) {
+
+    console.log('Answer props: ', props);
+
+    return _react2.default.createElement(
+        'label',
+        null,
+        _react2.default.createElement('input', { className: 'btn answer-btn', name: 'myInput', type: 'radio', value: props.value, onChange: function onChange() {
+                return props.phoneHome(props.value);
+            } }),
+        ' ',
+        (0, _htmlEntities.decode)(props.value, { level: 'html5' })
+    );
+}
 
 /***/ })
 /******/ ]);
