@@ -30,6 +30,10 @@ export default function App() {
         })
     },[]); 
 
+    if (error) {
+        return <p>Error loading questions.</p>
+    }
+
     return (
         <main className="flex-centered">
             {
