@@ -47,21 +47,17 @@ export default function Quiz(props) {
         console.log('Correct answers: ', correctAnswers);
 
         // loop through the user answers and compare to the correct answers
-
         const results = [];
         for (let i = 0; i < userAnswers.length; i++) {
-            if (userAnswers[i] === correctAnswers[i]) {
-                results.push(true);
-            } else {
-                results.push(false)
-            }
+            userAnswers[i] === correctAnswers[i]
+            ? results.push(true)
+            : results.push(false)
         };
 
         console.log('Results: ', results);
-        // return an array of true or false in each corresponding position
+        // return an array of booleans in each corresponding position
         return results;
 
-        
     }
 
     React.useEffect( () => {
