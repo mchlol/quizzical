@@ -37,23 +37,30 @@ export default function Question(props) {
             <h3 className="question">{decodeText(question.question)}</h3>
             
             <div className="answers-container">
-                <label htmlFor={shuffled[0]}>
-                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} defaultChecked={true}/> {decode(shuffled[0])}
-                </label>
 
-                <label htmlFor={shuffled[1]}>
-                    <input type="radio" id={shuffled[1]} name={question.question} value={shuffled[1]} /> {decode(shuffled[1])}
-                </label>
+                <span>
+                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} defaultChecked={true}/> 
+                    <label htmlFor={shuffled[0]}> {decode(shuffled[0])} </label>
+                </span>
 
-                <label htmlFor={shuffled[2]}>
-                    <input type="radio" id={shuffled[2]} name={question.question} value={shuffled[2]} /> {decode(shuffled[2])}
-                </label>
+                <span>
+                    <input type="radio" id={shuffled[1]} name={question.question} value={shuffled[1]} /> 
+                    <label htmlFor={shuffled[1]}> {decode(shuffled[1])} </label>
+                </span>
 
-                <label htmlFor={shuffled[3]}>
-                    <input type="radio" id={shuffled[3]} name={question.question} value={shuffled[3]} /> {decode(shuffled[3])}
+                <span>
+                    <input type="radio" id={shuffled[2]} name={question.question} value={shuffled[2]} /> 
+                    <label htmlFor={shuffled[2]}> {decode(shuffled[2])}</label>
+                </span>
+
+                <span>
+                    <input type="radio" id={shuffled[3]} name={question.question} value={shuffled[3]} />
+                    <label htmlFor={shuffled[3]}>
+                     {decode(shuffled[3])}
                 </label>
+                </span>
             </div>
-
+            
             <hr/>
         </div>
     )

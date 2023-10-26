@@ -4477,32 +4477,49 @@ function Question(props) {
             'div',
             { className: 'answers-container' },
             _react2.default.createElement(
-                'label',
-                { htmlFor: shuffled[0] },
+                'span',
+                null,
                 _react2.default.createElement('input', { type: 'radio', id: shuffled[0], name: question.question, value: shuffled[0], defaultChecked: true }),
-                ' ',
-                (0, _htmlEntities.decode)(shuffled[0])
+                _react2.default.createElement(
+                    'label',
+                    { htmlFor: shuffled[0] },
+                    ' ',
+                    (0, _htmlEntities.decode)(shuffled[0]),
+                    ' '
+                )
             ),
             _react2.default.createElement(
-                'label',
-                { htmlFor: shuffled[1] },
+                'span',
+                null,
                 _react2.default.createElement('input', { type: 'radio', id: shuffled[1], name: question.question, value: shuffled[1] }),
-                ' ',
-                (0, _htmlEntities.decode)(shuffled[1])
+                _react2.default.createElement(
+                    'label',
+                    { htmlFor: shuffled[1] },
+                    ' ',
+                    (0, _htmlEntities.decode)(shuffled[1]),
+                    ' '
+                )
             ),
             _react2.default.createElement(
-                'label',
-                { htmlFor: shuffled[2] },
+                'span',
+                null,
                 _react2.default.createElement('input', { type: 'radio', id: shuffled[2], name: question.question, value: shuffled[2] }),
-                ' ',
-                (0, _htmlEntities.decode)(shuffled[2])
+                _react2.default.createElement(
+                    'label',
+                    { htmlFor: shuffled[2] },
+                    ' ',
+                    (0, _htmlEntities.decode)(shuffled[2])
+                )
             ),
             _react2.default.createElement(
-                'label',
-                { htmlFor: shuffled[3] },
+                'span',
+                null,
                 _react2.default.createElement('input', { type: 'radio', id: shuffled[3], name: question.question, value: shuffled[3] }),
-                ' ',
-                (0, _htmlEntities.decode)(shuffled[3])
+                _react2.default.createElement(
+                    'label',
+                    { htmlFor: shuffled[3] },
+                    (0, _htmlEntities.decode)(shuffled[3])
+                )
             )
         ),
         _react2.default.createElement('hr', null)
@@ -4629,7 +4646,7 @@ function Quiz(props) {
         _react2.default.createElement(_Question2.default, { question: questions[4] }),
         _react2.default.createElement(
             "button",
-            { className: "btn action-btn" },
+            { className: "btn submit-btn" },
             "Check answers"
         )
     );
