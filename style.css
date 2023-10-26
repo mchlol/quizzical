@@ -72,3 +72,12 @@ h3.question {
 label {
     font-size: 14px;
 }
+
+input {
+    display: none;
+}
+
+input:checked+label {
+    background-color: black;
+    color: white;
+}
