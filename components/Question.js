@@ -20,6 +20,7 @@ export default function Question(props) {
 
         return newArr;
     }
+    // * we need to track that correct index outside the function scope
 
     React.useEffect( () => {
         const shuffled = shuffleAnswers(props.questions.incorrect_answers, correctAnswer);
@@ -32,36 +33,19 @@ export default function Question(props) {
         return decode(text, {level: 'html5' });
     }
 
-    // create inputs
-    function createElement(question, item) {
-        return (
-        <label htmlFor={question}>
-            <input type="radio" name={question} value={item} id={item} /> {item}
-        </label>
-        )
-    }
+    // * link a label to an input by using the same value for htmlFor on the label and id on the input
 
-    /*
-    function createElements(arr) {
-        const els = arr.map(item => <Answer key={nanoid()} value={item} phoneHome={props.phoneHome} />)
-        return els;
-    }
-
-    const elements = createElements(answers);
-    */
-
-    // console.log('Question props: ',props);
 
     return (
         <div>
-            <label key={nanoid()} className="flex-centered" htmlFor="question1">
+            
                 <h3 className="question">{decodeText(props.questions.question)}</h3>
-            </label>
+            
             <div className="answers-container">
-                {createElement(props.questions.question, answers[0])}
-                {createElement(props.questions.question, answers[1])}
-                {createElement(props.questions.question, answers[2])}
-                {createElement(props.questions.question, answers[3])}
+                <label htmlFor="answer0">
+                    <input type="radio" id="answer0" name="answer0" /> {answers[0]}
+                </label>
+
 
             </div>
             <hr/>

@@ -4762,6 +4762,7 @@ function Question(props) {
 
         return newArr;
     }
+    // * we need to track that correct index outside the function scope
 
     _react2.default.useEffect(function () {
         var shuffled = shuffleAnswers(props.questions.incorrect_answers, correctAnswer);
@@ -4774,46 +4775,27 @@ function Question(props) {
         return (0, _htmlEntities.decode)(text, { level: 'html5' });
     }
 
-    // create inputs
-    function createElement(question, item) {
-        return _react2.default.createElement(
-            "label",
-            { htmlFor: question },
-            _react2.default.createElement("input", { type: "radio", name: question, value: item, id: item }),
-            " ",
-            item
-        );
-    }
+    // * link a label to an input by using the same value for htmlFor on the label and id on the input
 
-    /*
-    function createElements(arr) {
-        const els = arr.map(item => <Answer key={nanoid()} value={item} phoneHome={props.phoneHome} />)
-        return els;
-    }
-     const elements = createElements(answers);
-    */
-
-    // console.log('Question props: ',props);
 
     return _react2.default.createElement(
         "div",
         null,
         _react2.default.createElement(
-            "label",
-            { key: (0, _nanoid.nanoid)(), className: "flex-centered", htmlFor: "question1" },
-            _react2.default.createElement(
-                "h3",
-                { className: "question" },
-                decodeText(props.questions.question)
-            )
+            "h3",
+            { className: "question" },
+            decodeText(props.questions.question)
         ),
         _react2.default.createElement(
             "div",
             { className: "answers-container" },
-            createElement(props.questions.question, answers[0]),
-            createElement(props.questions.question, answers[1]),
-            createElement(props.questions.question, answers[2]),
-            createElement(props.questions.question, answers[3])
+            _react2.default.createElement(
+                "label",
+                { htmlFor: "answer0" },
+                _react2.default.createElement("input", { type: "radio", id: "answer0", name: "answer0" }),
+                " ",
+                answers[0]
+            )
         ),
         _react2.default.createElement("hr", null)
     );
