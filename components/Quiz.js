@@ -29,7 +29,7 @@ export default function Quiz(props) {
         const formJson = Object.fromEntries(formData.entries());
         // returns question: answer key value pairs as strings only - no other info
         setQuizAnswers(formJson);
-        console.log('quizAnswers: ', quizAnswers);
+        // console.log('quizAnswers: ', quizAnswers);
 
     } // handleSubmit
 
@@ -44,7 +44,7 @@ export default function Quiz(props) {
         const userAnswers = Object.values(data);
 
         console.log('User answers: ',userAnswers)
-        console.log('Correct answers: ', correctAnswers);
+        // console.log('Correct answers: ', correctAnswers);
 
         // loop through the user answers and compare to the correct answers
         const results = [];

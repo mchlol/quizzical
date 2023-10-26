@@ -4564,7 +4564,7 @@ function Quiz(props) {
         var formJson = Object.fromEntries(formData.entries());
         // returns question: answer key value pairs as strings only - no other info
         setQuizAnswers(formJson);
-        console.log('quizAnswers: ', quizAnswers);
+        // console.log('quizAnswers: ', quizAnswers);
     } // handleSubmit
 
     function checkAnswers(data) {
@@ -4600,7 +4600,7 @@ function Quiz(props) {
         var userAnswers = Object.values(data);
 
         console.log('User answers: ', userAnswers);
-        console.log('Correct answers: ', correctAnswers);
+        // console.log('Correct answers: ', correctAnswers);
 
         // loop through the user answers and compare to the correct answers
         var results = [];
