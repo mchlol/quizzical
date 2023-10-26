@@ -1,14 +1,11 @@
 import React from "react";
 import {decode} from 'html-entities';
-import { nanoid } from "nanoid";
-import Answer from "./Answer";
+// import Answer from "./Answer";
 
 export default function Question(props) {
 
-    const correctAnswer = props.questions.correct_answer; // not decoded so string can be matched exactly
-
-    const [answers, setAnswers] = React.useState([]);
-    const [selected, setSelected] = React.useState(null);
+    const question = props.question;
+    console.log('Question: ', question);
 
     function shuffleAnswers(incorrectArr, correct) {
         /* 
@@ -20,33 +17,20 @@ export default function Question(props) {
 
         return newArr;
     }
-    // * we need to track that correct index outside the function scope
-
-    React.useEffect( () => {
-        const shuffled = shuffleAnswers(props.questions.incorrect_answers, correctAnswer);
-        console.log(correctAnswer);
-        console.log(shuffled);
-        setAnswers(shuffled); // set answers to the shuffled array
-    },[]);
 
     function decodeText(text) {
         return decode(text, {level: 'html5' });
     }
 
-    // * link a label to an input by using the same value for htmlFor on the label and id on the input
-
-
     return (
         <div>
             
-                <h3 className="question">{decodeText(props.questions.question)}</h3>
+            <h3 className="question">Question</h3>
             
             <div className="answers-container">
-                <label htmlFor="answer0">
-                    <input type="radio" id="answer0" name="answer0" /> {answers[0]}
+                <label htmlFor="answer">
+                    <input type="radio" id="answer" name="question" value="answer" /> Answer
                 </label>
-
-
             </div>
             <hr/>
         </div>
