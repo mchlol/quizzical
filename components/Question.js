@@ -37,19 +37,19 @@ export default function Question(props) {
             <h3 className="question">{decodeText(question.question)}</h3>
             
             <div className="answers-container">
-                <label className="btn answer-btn" htmlFor={shuffled[0]}>
+                <label htmlFor={shuffled[0]}>
                     <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} defaultChecked={true}/> {decode(shuffled[0])}
                 </label>
 
-                <label className="btn answer-btn" htmlFor={shuffled[1]}>
+                <label htmlFor={shuffled[1]}>
                     <input type="radio" id={shuffled[1]} name={question.question} value={shuffled[1]} /> {decode(shuffled[1])}
                 </label>
 
-                <label className="btn answer-btn" htmlFor={shuffled[2]}>
+                <label htmlFor={shuffled[2]}>
                     <input type="radio" id={shuffled[2]} name={question.question} value={shuffled[2]} /> {decode(shuffled[2])}
                 </label>
 
-                <label className="btn answer-btn" htmlFor={shuffled[3]}>
+                <label htmlFor={shuffled[3]}>
                     <input type="radio" id={shuffled[3]} name={question.question} value={shuffled[3]} /> {decode(shuffled[3])}
                 </label>
             </div>
