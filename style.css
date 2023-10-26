@@ -26,7 +26,6 @@ hr {
     border: none;
     border-bottom: 1px solid #DBDEF0;
     width: 100%;
-    margin: 1em 0;
 }
 
 h3.question {
@@ -64,9 +63,12 @@ h3.question {
     color: #F5F7FB;
     font-weight: 600;
     padding: 1em 1.5em;
-
 }
 
 .answer-btn.selected {
     background-color: #D6DBF5;
+}
+
+label {
+    font-size: 14px;
 }

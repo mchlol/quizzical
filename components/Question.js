@@ -1,61 +1,60 @@
 import React from "react";
 import {decode} from 'html-entities';
-import { nanoid } from "nanoid";
-import Answer from "./Answer";
+// import Answer from "./Answer";
 
 export default function Question(props) {
 
-    const question = props.questions.question;
-    const correctAnswer = props.questions.correct_answer;
-    const [answers, setAnswers] = React.useState([]);
-    // const [selected, setSelected] = React.useState(null);
+    const [question, setQuestion] = React.useState(props.question);
+    const [shuffled, setShuffled] = React.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer));
 
+    // TODO: for debugging only - remove before build
+    // React.useEffect( () => {
+    //     console.log('Question: ', question);
+    //     console.log('Correct: ', correct);
+    //     console.log('Shuffled: ', shuffled);
+
+    // }, [question]);
+
+    // TODO: move 2 functions below into a utils file
     function shuffleAnswers(incorrectArr, correct) {
-        // get the array of incorrect answers and the correct answers
-        // get a random number from 0 - 4
-        // use toSpliced to insert correct answer at the random index
+        /* 
+        get the array of incorrect answers and the correct answers
+        get a random number from 0 - 4
+        use toSpliced to insert correct answer at the random index */
         const correctIndex = Math.floor(Math.random() * 4);
         const newArr = incorrectArr.toSpliced(correctIndex, 0, correct);
-        // const object = {
-        //     correctIndex: correctIndex,
-        //     correctAnswer: correctAnswer,
-        //     array: newArr
-        // };
 
-        // return object;
         return newArr;
     }
-
-    React.useEffect( () => {
-        const shuffled = shuffleAnswers(props.questions.incorrect_answers, correctAnswer);
-        setAnswers(shuffled);
-    },[]);
 
     function decodeText(text) {
         return decode(text, {level: 'html5' });
     }
 
-    function createElements(arr) {
-        const els = arr.map(item => <Answer key={nanoid()} value={item} phoneHome={() => props.phoneHome(item)} />)
-        return els;
-    }
-
-    const elements = createElements(answers);
-
-    console.log('Question props: ',props);
-
     return (
-        <label key={nanoid()} className="flex-centered" htmlFor="question1">
-
-            <h3 className="question">{decodeText(question)}</h3>
-
-            <div className="answers-container">
-                {elements}
-            </div>
+        <div>
             
+            <h3 className="question">{decodeText(question.question)}</h3>
+            
+            <div className="answers-container">
+                <label htmlFor={shuffled[0]}>
+                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} defaultChecked={true}/> {decode(shuffled[0])}
+                </label>
+
+                <label htmlFor={shuffled[1]}>
+                    <input type="radio" id={shuffled[1]} name={question.question} value={shuffled[1]} /> {decode(shuffled[1])}
+                </label>
+
+                <label htmlFor={shuffled[2]}>
+                    <input type="radio" id={shuffled[2]} name={question.question} value={shuffled[2]} /> {decode(shuffled[2])}
+                </label>
+
+                <label htmlFor={shuffled[3]}>
+                    <input type="radio" id={shuffled[3]} name={question.question} value={shuffled[3]} /> {decode(shuffled[3])}
+                </label>
+            </div>
 
             <hr/>
-
-        </label>
+        </div>
     )
 }
