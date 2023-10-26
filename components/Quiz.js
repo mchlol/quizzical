@@ -78,7 +78,7 @@ export default function Quiz(props) {
             <Question question={questions[4]} />
 
 
-            <button className="btn action-btn">Check answers</button>
+            <button className="btn submit-btn">Check answers</button>
 
         </form>
     )
