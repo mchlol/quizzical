@@ -11,12 +11,6 @@ export default function Quiz(props) {
         nanoid(), nanoid(), nanoid(), nanoid(), nanoid()
     ]) // five unique ids in order for each question // ? how are these useful?
 
-    const [choiceData, setChoiceData] = React.useState({});
-
-    React.useEffect( () => {
-        console.log('Quiz: choiceData: ',choiceData);
-    },[choiceData])
-
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -28,12 +22,13 @@ export default function Quiz(props) {
 
         // set the form data in state
         setQuizAnswers(formJson); // gets the question and the user answer
+
         // checks the answers
         const results = checkAnswers(quizAnswers);
-        // render the score at the bottom
-        // render a new button that says play again and triggers a re-render of the quiz component with new questions
-
         console.log('Results from form submit: ', results)
+
+        // TODO: render the score at the bottom
+        // TODO: render a new button that says play again and triggers a re-render of the quiz component with new questions
 
     } // handleSubmit
 
@@ -45,7 +40,11 @@ export default function Quiz(props) {
             correctAnswers.push(question.correct_answer);
         }
 
-        // ! check if all the questions were answered 
+        const correctIndexes = [];
+        // loop through each question
+        // return the index of the correct question in the shuffled array
+        // return the index of the user answer in the shuffled array
+        // ! the shuffled array only exists in the Question component
 
         // store the user answers returned from the form
         const userAnswers = Object.values(data);
@@ -53,40 +52,21 @@ export default function Quiz(props) {
         console.log('Quiz: userAnswers: ',userAnswers); // an array of strings
 
         // loop through the user answers and compare to the correct answers
-        const results = [];
+        const results = []; // will be an array of booleans
         for (let i = 0; i < userAnswers.length; i++) {
             userAnswers[i] === correctAnswers[i]
             ? results.push(true)
             : results.push(false)
         };
 
-        // return an array of booleans in each corresponding position
-        // we need more info - the correct answer AND the answer the user chose
+        // we need more info - the index of the correct answer AND the index of the answer the user chose
+
+        // ! Validate: check if all the questions were answered & early return - where does this need to happen?
+
         return results;
 
     } // checkAnswers
 
-
-    // a phone home function for the child component to send back data
-
-    function sendChoices(questionId, correctIndex, choiceIndex) {
-        
-        const object = {
-            questionId,
-            correctIndex,
-            choiceIndex
-        }
-
-        // ! answers have to be selected in the correct order
-        setChoiceData( prev => {
-            return [
-                ...prev,
-                object
-            ]
-        })
-
-        console.log('Quiz: sendChoices: ', object)
-    }
 
 
     return (
@@ -95,11 +75,11 @@ export default function Quiz(props) {
         className="questions-container flex-centered"
         onSubmit={handleSubmit}>
 
-            <Question question={questions[0]} id={questionIds[0]} sendChoices={sendChoices}/>
-            <Question question={questions[1]} id={questionIds[1]} sendChoices={sendChoices} />
-            <Question question={questions[2]} id={questionIds[2]} sendChoices={sendChoices} />
-            <Question question={questions[3]} id={questionIds[3]} sendChoices={sendChoices} />
-            <Question question={questions[4]} id={questionIds[4]} sendChoices={sendChoices} />
+            <Question question={questions[0]} id={questionIds[0]} />
+            <Question question={questions[1]} id={questionIds[1]} />
+            <Question question={questions[2]} id={questionIds[2]} />
+            <Question question={questions[3]} id={questionIds[3]} />
+            <Question question={questions[4]} id={questionIds[4]} />
 
 
             <button className="btn submit-btn">Check answers</button>

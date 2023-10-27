@@ -5,22 +5,12 @@ import {decode} from 'html-entities';
 export default function Question(props) {
 
     const [question, setQuestion] = React.useState(props.question);
-    const [shuffled, setShuffled] = React.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer));
-    const [correct, setCorrect] = React.useState(question.correct_answer); // ! is this needed?
-    const [correctIndex, setCorrectIndex] = React.useState(shuffled.indexOf(correct));
+    const [shuffled, setShuffled] = React.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer)); 
+    const [correct, setCorrect] = React.useState(question.correct_answer); // the correct answer string
+    const [correctIndex, setCorrectIndex] = React.useState(shuffled.indexOf(correct)); // index of the correct answer in the shuffled array
 
-    // React.useEffect( () => {
-    //     setCorrectIndex(getCorrectIndex());
-    // },[]);
 
-    // // TODO: move helper functions into a utils file
-
-    // function getCorrectIndex() {
-    //     // get the index of the first string un shuffled that matches correctAnswer
-    //     const foundIndex = shuffled.indexOf(correct);
-    //     console.log(`Question: getCorrectIndex for ${props.id}`, foundIndex);
-    // }
-
+    // TODO: utils
     function shuffleAnswers(incorrectArr, correct) {
         /* 
         get the array of incorrect answers and the correct answers
@@ -36,18 +26,6 @@ export default function Question(props) {
         return decode(text, {level: 'html5' });
     }
 
-    // get the index of the user choice
-    let choiceIndex;
-    function setChoiceIndex(num, questionId) {
-        // console.log(`Question: setChoiceIndex for question ${questionId} is: `, num);
-        choiceIndex = num;
-        props.sendChoices(questionId, correctIndex, choiceIndex);
-        return num;
-    }
-
-    // send the info back to Quiz component
-    // ! called on each mount
-    
 
     return (
         <div>

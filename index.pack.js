@@ -1104,9 +1104,9 @@ process.umask = function() { return 0; };
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(64);
+  module.exports = __webpack_require__(66);
 } else {
-  module.exports = __webpack_require__(63);
+  module.exports = __webpack_require__(65);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
@@ -2505,9 +2505,9 @@ function formDataToJSON(formData) {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(68);
+  module.exports = __webpack_require__(70);
 } else {
-  module.exports = __webpack_require__(67);
+  module.exports = __webpack_require__(69);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
@@ -2666,9 +2666,9 @@ if (process.env.NODE_ENV === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(62);
+  module.exports = __webpack_require__(64);
 } else {
-  module.exports = __webpack_require__(61);
+  module.exports = __webpack_require__(63);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
@@ -4442,25 +4442,17 @@ function Question(props) {
     var _React$useState5 = _react2.default.useState(question.correct_answer),
         _React$useState6 = _slicedToArray(_React$useState5, 2),
         correct = _React$useState6[0],
-        setCorrect = _React$useState6[1]; // ! is this needed?
+        setCorrect = _React$useState6[1]; // the correct answer string
 
 
     var _React$useState7 = _react2.default.useState(shuffled.indexOf(correct)),
         _React$useState8 = _slicedToArray(_React$useState7, 2),
         correctIndex = _React$useState8[0],
-        setCorrectIndex = _React$useState8[1];
+        setCorrectIndex = _React$useState8[1]; // index of the correct answer in the shuffled array
 
-    // React.useEffect( () => {
-    //     setCorrectIndex(getCorrectIndex());
-    // },[]);
 
-    // // TODO: move helper functions into a utils file
+    // TODO: utils
 
-    // function getCorrectIndex() {
-    //     // get the index of the first string un shuffled that matches correctAnswer
-    //     const foundIndex = shuffled.indexOf(correct);
-    //     console.log(`Question: getCorrectIndex for ${props.id}`, foundIndex);
-    // }
 
     function shuffleAnswers(incorrectArr, correct) {
         /* 
@@ -4476,19 +4468,6 @@ function Question(props) {
     function decodeText(text) {
         return (0, _htmlEntities.decode)(text, { level: 'html5' });
     }
-
-    // get the index of the user choice
-    var choiceIndex = void 0;
-    function setChoiceIndex(num, questionId) {
-        // console.log(`Question: setChoiceIndex for question ${questionId} is: `, num);
-        choiceIndex = num;
-        props.sendChoices(questionId, correctIndex, choiceIndex);
-        return num;
-    }
-
-    // send the info back to Quiz component
-    // ! called on each mount
-
 
     return _react2.default.createElement(
         'div',
@@ -4582,11 +4561,9 @@ var _Question = __webpack_require__(50);
 
 var _Question2 = _interopRequireDefault(_Question);
 
-var _nanoid = __webpack_require__(70);
+var _nanoid = __webpack_require__(61);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function Quiz(props) {
 
@@ -4603,14 +4580,6 @@ function Quiz(props) {
         questionIds = _React$useState4[0],
         setQuestionIds = _React$useState4[1]; // five unique ids in order for each question // ? how are these useful?
 
-    var _React$useState5 = _react2.default.useState({}),
-        _React$useState6 = _slicedToArray(_React$useState5, 2),
-        choiceData = _React$useState6[0],
-        setChoiceData = _React$useState6[1];
-
-    _react2.default.useEffect(function () {
-        console.log('Quiz: choiceData: ', choiceData);
-    }, [choiceData]);
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -4622,12 +4591,13 @@ function Quiz(props) {
 
         // set the form data in state
         setQuizAnswers(formJson); // gets the question and the user answer
+
         // checks the answers
         var results = checkAnswers(quizAnswers);
-        // render the score at the bottom
-        // render a new button that says play again and triggers a re-render of the quiz component with new questions
-
         console.log('Results from form submit: ', results);
+
+        // TODO: render the score at the bottom
+        // TODO: render a new button that says play again and triggers a re-render of the quiz component with new questions
     } // handleSubmit
 
     function checkAnswers(data) {
@@ -4644,10 +4614,6 @@ function Quiz(props) {
 
                 correctAnswers.push(question.correct_answer);
             }
-
-            // ! check if all the questions were answered 
-
-            // store the user answers returned from the form
         } catch (err) {
             _didIteratorError = true;
             _iteratorError = err;
@@ -4663,49 +4629,41 @@ function Quiz(props) {
             }
         }
 
+        var correctIndexes = [];
+        // loop through each question
+        // return the index of the correct question in the shuffled array
+        // return the index of the user answer in the shuffled array
+        // ! the shuffled array only exists in the Question component
+
+        // store the user answers returned from the form
         var userAnswers = Object.values(data);
 
         console.log('Quiz: userAnswers: ', userAnswers); // an array of strings
 
         // loop through the user answers and compare to the correct answers
-        var results = [];
+        var results = []; // will be an array of booleans
         for (var i = 0; i < userAnswers.length; i++) {
             userAnswers[i] === correctAnswers[i] ? results.push(true) : results.push(false);
         };
 
-        // return an array of booleans in each corresponding position
-        // we need more info - the correct answer AND the answer the user chose
+        // we need more info - the index of the correct answer AND the index of the answer the user chose
+
+        // ! Validate: check if all the questions were answered & early return - where does this need to happen?
+
         return results;
     } // checkAnswers
 
-
-    // a phone home function for the child component to send back data
-
-    function sendChoices(questionId, correctIndex, choiceIndex) {
-
-        var object = {
-            questionId: questionId,
-            correctIndex: correctIndex,
-            choiceIndex: choiceIndex
-
-            // ! answers have to be selected in the correct order
-        };setChoiceData(function (prev) {
-            return [].concat(_toConsumableArray(prev), [object]);
-        });
-
-        console.log('Quiz: sendChoices: ', object);
-    }
 
     return _react2.default.createElement(
         "form",
         {
             className: "questions-container flex-centered",
             onSubmit: handleSubmit },
-        _react2.default.createElement(_Question2.default, { question: questions[0], id: questionIds[0], sendChoices: sendChoices }),
-        _react2.default.createElement(_Question2.default, { question: questions[1], id: questionIds[1], sendChoices: sendChoices }),
-        _react2.default.createElement(_Question2.default, { question: questions[2], id: questionIds[2], sendChoices: sendChoices }),
-        _react2.default.createElement(_Question2.default, { question: questions[3], id: questionIds[3], sendChoices: sendChoices }),
-        _react2.default.createElement(_Question2.default, { question: questions[4], id: questionIds[4], sendChoices: sendChoices }),
+        _react2.default.createElement(_Question2.default, { question: questions[0], id: questionIds[0] }),
+        _react2.default.createElement(_Question2.default, { question: questions[1], id: questionIds[1] }),
+        _react2.default.createElement(_Question2.default, { question: questions[2], id: questionIds[2] }),
+        _react2.default.createElement(_Question2.default, { question: questions[3], id: questionIds[3] }),
+        _react2.default.createElement(_Question2.default, { question: questions[4], id: questionIds[4] }),
         _react2.default.createElement(
             "button",
             { className: "btn submit-btn" },
@@ -7020,6 +6978,64 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 /* 61 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "random", function() { return random; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customRandom", function() { return customRandom; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customAlphabet", function() { return customAlphabet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nanoid", function() { return nanoid; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__ = __webpack_require__(62);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "urlAlphabet", function() { return __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__["a"]; });
+
+let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
+let customRandom = (alphabet, defaultSize, getRandom) => {
+  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+  let step = -~((1.6 * mask * defaultSize) / alphabet.length)
+  return (size = defaultSize) => {
+    let id = ''
+    while (true) {
+      let bytes = getRandom(step)
+      let j = step
+      while (j--) {
+        id += alphabet[bytes[j] & mask] || ''
+        if (id.length === size) return id
+      }
+    }
+  }
+}
+let customAlphabet = (alphabet, size = 21) =>
+  customRandom(alphabet, size, random)
+let nanoid = (size = 21) =>
+  crypto.getRandomValues(new Uint8Array(size)).reduce((id, byte) => {
+    byte &= 63
+    if (byte < 36) {
+      id += byte.toString(36)
+    } else if (byte < 62) {
+      id += (byte - 26).toString(36).toUpperCase()
+    } else if (byte > 62) {
+      id += '-'
+    } else {
+      id += '_'
+    }
+    return id
+  }, '')
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const urlAlphabet =
+  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
+/* harmony export (immutable) */ __webpack_exports__["a"] = urlAlphabet;
+
+
+
+/***/ }),
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7041,7 +7057,7 @@ if (process.env.NODE_ENV !== "production") {
 var React = __webpack_require__(3);
 var _assign = __webpack_require__(8);
 var Scheduler = __webpack_require__(21);
-var tracing = __webpack_require__(69);
+var tracing = __webpack_require__(71);
 
 var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
 
@@ -33289,7 +33305,7 @@ exports.version = ReactVersion;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33593,7 +33609,7 @@ exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!rk(c))throw Er
 
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35934,7 +35950,7 @@ exports.version = ReactVersion;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35964,7 +35980,7 @@ exports.useLayoutEffect=function(a,b){return S().useLayoutEffect(a,b)};exports.u
 
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36319,7 +36335,7 @@ exports.unstable_wrap = unstable_wrap;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36335,7 +36351,7 @@ var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unst
 
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36989,7 +37005,7 @@ exports.unstable_wrapCallback = unstable_wrapCallback;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37016,77 +37032,19 @@ exports.unstable_wrapCallback=function(a){var b=P;return function(){var c=P;P=b;
 
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(66);
+  module.exports = __webpack_require__(68);
 } else {
-  module.exports = __webpack_require__(65);
+  module.exports = __webpack_require__(67);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ }),
-/* 70 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "random", function() { return random; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customRandom", function() { return customRandom; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customAlphabet", function() { return customAlphabet; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nanoid", function() { return nanoid; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__ = __webpack_require__(71);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "urlAlphabet", function() { return __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__["a"]; });
-
-let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
-let customRandom = (alphabet, defaultSize, getRandom) => {
-  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
-  let step = -~((1.6 * mask * defaultSize) / alphabet.length)
-  return (size = defaultSize) => {
-    let id = ''
-    while (true) {
-      let bytes = getRandom(step)
-      let j = step
-      while (j--) {
-        id += alphabet[bytes[j] & mask] || ''
-        if (id.length === size) return id
-      }
-    }
-  }
-}
-let customAlphabet = (alphabet, size = 21) =>
-  customRandom(alphabet, size, random)
-let nanoid = (size = 21) =>
-  crypto.getRandomValues(new Uint8Array(size)).reduce((id, byte) => {
-    byte &= 63
-    if (byte < 36) {
-      id += byte.toString(36)
-    } else if (byte < 62) {
-      id += (byte - 26).toString(36).toUpperCase()
-    } else if (byte > 62) {
-      id += '-'
-    } else {
-      id += '_'
-    }
-    return id
-  }, '')
-
-
-/***/ }),
-/* 71 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const urlAlphabet =
-  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
-/* harmony export (immutable) */ __webpack_exports__["a"] = urlAlphabet;
-
-
 
 /***/ })
 /******/ ]);
