@@ -4439,16 +4439,28 @@ function Question(props) {
         shuffled = _React$useState4[0],
         setShuffled = _React$useState4[1];
 
-    // TODO: for debugging only - remove before build
+    var _React$useState5 = _react2.default.useState(question.correct_answer),
+        _React$useState6 = _slicedToArray(_React$useState5, 2),
+        correct = _React$useState6[0],
+        setCorrect = _React$useState6[1]; // ! is this needed?
+
+
+    var _React$useState7 = _react2.default.useState(shuffled.indexOf(correct)),
+        _React$useState8 = _slicedToArray(_React$useState7, 2),
+        correctIndex = _React$useState8[0],
+        setCorrectIndex = _React$useState8[1];
+
     // React.useEffect( () => {
-    //     console.log('Question: ', question);
-    //     console.log('Correct: ', correct);
-    //     console.log('Shuffled: ', shuffled);
+    //     setCorrectIndex(getCorrectIndex());
+    // },[]);
 
-    // }, [question]);
+    // // TODO: move helper functions into a utils file
 
-    // TODO: move 2 functions below into a utils file
-
+    // function getCorrectIndex() {
+    //     // get the index of the first string un shuffled that matches correctAnswer
+    //     const foundIndex = shuffled.indexOf(correct);
+    //     console.log(`Question: getCorrectIndex for ${props.id}`, foundIndex);
+    // }
 
     function shuffleAnswers(incorrectArr, correct) {
         /* 
@@ -4465,6 +4477,19 @@ function Question(props) {
         return (0, _htmlEntities.decode)(text, { level: 'html5' });
     }
 
+    // get the index of the user choice
+    var choiceIndex = void 0;
+    function setChoiceIndex(num, questionId) {
+        // console.log(`Question: setChoiceIndex for question ${questionId} is: `, num);
+        choiceIndex = num;
+        props.sendChoices(questionId, correctIndex, choiceIndex);
+        return num;
+    }
+
+    // send the info back to Quiz component
+    // ! called on each mount
+
+
     return _react2.default.createElement(
         'div',
         null,
@@ -4479,7 +4504,9 @@ function Question(props) {
             _react2.default.createElement(
                 'span',
                 null,
-                _react2.default.createElement('input', { type: 'radio', id: shuffled[0], name: question.question, value: shuffled[0], defaultChecked: true }),
+                _react2.default.createElement('input', { type: 'radio', id: shuffled[0], name: question.question, value: shuffled[0], onChange: function onChange() {
+                        return setChoiceIndex(0, props.id);
+                    } }),
                 _react2.default.createElement(
                     'label',
                     { htmlFor: shuffled[0] },
@@ -4491,7 +4518,9 @@ function Question(props) {
             _react2.default.createElement(
                 'span',
                 null,
-                _react2.default.createElement('input', { type: 'radio', id: shuffled[1], name: question.question, value: shuffled[1] }),
+                _react2.default.createElement('input', { type: 'radio', id: shuffled[1], name: question.question, value: shuffled[1], onChange: function onChange() {
+                        return setChoiceIndex(1, props.id);
+                    } }),
                 _react2.default.createElement(
                     'label',
                     { htmlFor: shuffled[1] },
@@ -4503,7 +4532,9 @@ function Question(props) {
             _react2.default.createElement(
                 'span',
                 null,
-                _react2.default.createElement('input', { type: 'radio', id: shuffled[2], name: question.question, value: shuffled[2] }),
+                _react2.default.createElement('input', { type: 'radio', id: shuffled[2], name: question.question, value: shuffled[2], onChange: function onChange() {
+                        return setChoiceIndex(2, props.id);
+                    } }),
                 _react2.default.createElement(
                     'label',
                     { htmlFor: shuffled[2] },
@@ -4514,7 +4545,9 @@ function Question(props) {
             _react2.default.createElement(
                 'span',
                 null,
-                _react2.default.createElement('input', { type: 'radio', id: shuffled[3], name: question.question, value: shuffled[3] }),
+                _react2.default.createElement('input', { type: 'radio', id: shuffled[3], name: question.question, value: shuffled[3], onChange: function onChange() {
+                        return setChoiceIndex(3, props.id);
+                    } }),
                 _react2.default.createElement(
                     'label',
                     { htmlFor: shuffled[3] },
@@ -4549,29 +4582,35 @@ var _Question = __webpack_require__(50);
 
 var _Question2 = _interopRequireDefault(_Question);
 
+var _nanoid = __webpack_require__(70);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function Quiz(props) {
 
-    var questions = props.questions;
-
-    // copy the object with a new property
-    // TODO: look into why this can't be done
-    // const [question0, setQuestion0] = React.useState( { ...questions[0], key: "value" });
-
-    // TODO: if these won't be used, remove before build
-    // const [question0, setQuestion0] = React.useState(questions[0]);
-    // const [question1, setQuestion1] = React.useState(questions[1]);
-    // const [question2, setQuestion2] = React.useState(questions[2]);
-    // const [question3, setQuestion3] = React.useState(questions[3]);
-    // const [question4, setQuestion4] = React.useState(questions[4]);
-
-    // console.table('Question0: ', question0)
+    var questions = props.questions; // data returned from the API
 
     var _React$useState = _react2.default.useState([]),
         _React$useState2 = _slicedToArray(_React$useState, 2),
         quizAnswers = _React$useState2[0],
-        setQuizAnswers = _React$useState2[1];
+        setQuizAnswers = _React$useState2[1]; // data returned from the form - an object that contains only question/user answer pairs
+
+
+    var _React$useState3 = _react2.default.useState([(0, _nanoid.nanoid)(), (0, _nanoid.nanoid)(), (0, _nanoid.nanoid)(), (0, _nanoid.nanoid)(), (0, _nanoid.nanoid)()]),
+        _React$useState4 = _slicedToArray(_React$useState3, 2),
+        questionIds = _React$useState4[0],
+        setQuestionIds = _React$useState4[1]; // five unique ids in order for each question // ? how are these useful?
+
+    var _React$useState5 = _react2.default.useState({}),
+        _React$useState6 = _slicedToArray(_React$useState5, 2),
+        choiceData = _React$useState6[0],
+        setChoiceData = _React$useState6[1];
+
+    _react2.default.useEffect(function () {
+        console.log('Quiz: choiceData: ', choiceData);
+    }, [choiceData]);
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -4579,9 +4618,16 @@ function Quiz(props) {
         var formData = new FormData(form);
 
         var formJson = Object.fromEntries(formData.entries());
-        // returns question: answer key value pairs as strings only - no other info
-        setQuizAnswers(formJson);
-        // console.log('quizAnswers: ', quizAnswers);
+        console.log('Quiz: formJson ', formJson);
+
+        // set the form data in state
+        setQuizAnswers(formJson); // gets the question and the user answer
+        // checks the answers
+        var results = checkAnswers(quizAnswers);
+        // render the score at the bottom
+        // render a new button that says play again and triggers a re-render of the quiz component with new questions
+
+        console.log('Results from form submit: ', results);
     } // handleSubmit
 
     function checkAnswers(data) {
@@ -4598,7 +4644,10 @@ function Quiz(props) {
 
                 correctAnswers.push(question.correct_answer);
             }
-            // store the user answers returned from the from
+
+            // ! check if all the questions were answered 
+
+            // store the user answers returned from the form
         } catch (err) {
             _didIteratorError = true;
             _iteratorError = err;
@@ -4616,8 +4665,7 @@ function Quiz(props) {
 
         var userAnswers = Object.values(data);
 
-        console.log('User answers: ', userAnswers);
-        // console.log('Correct answers: ', correctAnswers);
+        console.log('Quiz: userAnswers: ', userAnswers); // an array of strings
 
         // loop through the user answers and compare to the correct answers
         var results = [];
@@ -4625,25 +4673,39 @@ function Quiz(props) {
             userAnswers[i] === correctAnswers[i] ? results.push(true) : results.push(false);
         };
 
-        console.log('Results: ', results);
         // return an array of booleans in each corresponding position
+        // we need more info - the correct answer AND the answer the user chose
         return results;
-    }
+    } // checkAnswers
 
-    _react2.default.useEffect(function () {
-        checkAnswers(quizAnswers);
-    }, [quizAnswers]);
+
+    // a phone home function for the child component to send back data
+
+    function sendChoices(questionId, correctIndex, choiceIndex) {
+
+        var object = {
+            questionId: questionId,
+            correctIndex: correctIndex,
+            choiceIndex: choiceIndex
+
+            // ! answers have to be selected in the correct order
+        };setChoiceData(function (prev) {
+            return [].concat(_toConsumableArray(prev), [object]);
+        });
+
+        console.log('Quiz: sendChoices: ', object);
+    }
 
     return _react2.default.createElement(
         "form",
         {
             className: "questions-container flex-centered",
             onSubmit: handleSubmit },
-        _react2.default.createElement(_Question2.default, { question: questions[0] }),
-        _react2.default.createElement(_Question2.default, { question: questions[1] }),
-        _react2.default.createElement(_Question2.default, { question: questions[2] }),
-        _react2.default.createElement(_Question2.default, { question: questions[3] }),
-        _react2.default.createElement(_Question2.default, { question: questions[4] }),
+        _react2.default.createElement(_Question2.default, { question: questions[0], id: questionIds[0], sendChoices: sendChoices }),
+        _react2.default.createElement(_Question2.default, { question: questions[1], id: questionIds[1], sendChoices: sendChoices }),
+        _react2.default.createElement(_Question2.default, { question: questions[2], id: questionIds[2], sendChoices: sendChoices }),
+        _react2.default.createElement(_Question2.default, { question: questions[3], id: questionIds[3], sendChoices: sendChoices }),
+        _react2.default.createElement(_Question2.default, { question: questions[4], id: questionIds[4], sendChoices: sendChoices }),
         _react2.default.createElement(
             "button",
             { className: "btn submit-btn" },
@@ -36967,6 +37029,64 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+/* 70 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "random", function() { return random; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customRandom", function() { return customRandom; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customAlphabet", function() { return customAlphabet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nanoid", function() { return nanoid; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__ = __webpack_require__(71);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "urlAlphabet", function() { return __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__["a"]; });
+
+let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
+let customRandom = (alphabet, defaultSize, getRandom) => {
+  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+  let step = -~((1.6 * mask * defaultSize) / alphabet.length)
+  return (size = defaultSize) => {
+    let id = ''
+    while (true) {
+      let bytes = getRandom(step)
+      let j = step
+      while (j--) {
+        id += alphabet[bytes[j] & mask] || ''
+        if (id.length === size) return id
+      }
+    }
+  }
+}
+let customAlphabet = (alphabet, size = 21) =>
+  customRandom(alphabet, size, random)
+let nanoid = (size = 21) =>
+  crypto.getRandomValues(new Uint8Array(size)).reduce((id, byte) => {
+    byte &= 63
+    if (byte < 36) {
+      id += byte.toString(36)
+    } else if (byte < 62) {
+      id += (byte - 26).toString(36).toUpperCase()
+    } else if (byte > 62) {
+      id += '-'
+    } else {
+      id += '_'
+    }
+    return id
+  }, '')
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const urlAlphabet =
+  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
+/* harmony export (immutable) */ __webpack_exports__["a"] = urlAlphabet;
+
+
 
 /***/ })
 /******/ ]);

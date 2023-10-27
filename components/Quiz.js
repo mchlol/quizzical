@@ -1,35 +1,39 @@
 import React from "react";
 import Question from "./Question";
+import { nanoid } from "nanoid";
 
 export default function Quiz(props) {
 
-    const questions = props.questions;
-    
+    const questions = props.questions; // data returned from the API
 
-    // copy the object with a new property
-    // TODO: look into why this can't be done
-    // const [question0, setQuestion0] = React.useState( { ...questions[0], key: "value" });
+    const [quizAnswers, setQuizAnswers] = React.useState([]); // data returned from the form - an object that contains only question/user answer pairs
+    const [questionIds, setQuestionIds] = React.useState([
+        nanoid(), nanoid(), nanoid(), nanoid(), nanoid()
+    ]) // five unique ids in order for each question // ? how are these useful?
 
-    // TODO: if these won't be used, remove before build
-    // const [question0, setQuestion0] = React.useState(questions[0]);
-    // const [question1, setQuestion1] = React.useState(questions[1]);
-    // const [question2, setQuestion2] = React.useState(questions[2]);
-    // const [question3, setQuestion3] = React.useState(questions[3]);
-    // const [question4, setQuestion4] = React.useState(questions[4]);
+    const [choiceData, setChoiceData] = React.useState({});
 
-    // console.table('Question0: ', question0)
+    React.useEffect( () => {
+        console.log('Quiz: choiceData: ',choiceData);
+    },[choiceData])
 
-    const [quizAnswers, setQuizAnswers] = React.useState([]);
 
     function handleSubmit(e) {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
-
+        
         const formJson = Object.fromEntries(formData.entries());
-        // returns question: answer key value pairs as strings only - no other info
-        setQuizAnswers(formJson);
-        // console.log('quizAnswers: ', quizAnswers);
+        console.log('Quiz: formJson ',formJson);
+
+        // set the form data in state
+        setQuizAnswers(formJson); // gets the question and the user answer
+        // checks the answers
+        const results = checkAnswers(quizAnswers);
+        // render the score at the bottom
+        // render a new button that says play again and triggers a re-render of the quiz component with new questions
+
+        console.log('Results from form submit: ', results)
 
     } // handleSubmit
 
@@ -40,11 +44,13 @@ export default function Quiz(props) {
         for (const question of questions) {
             correctAnswers.push(question.correct_answer);
         }
-        // store the user answers returned from the from
+
+        // ! check if all the questions were answered 
+
+        // store the user answers returned from the form
         const userAnswers = Object.values(data);
 
-        console.log('User answers: ',userAnswers)
-        // console.log('Correct answers: ', correctAnswers);
+        console.log('Quiz: userAnswers: ',userAnswers); // an array of strings
 
         // loop through the user answers and compare to the correct answers
         const results = [];
@@ -54,15 +60,33 @@ export default function Quiz(props) {
             : results.push(false)
         };
 
-        console.log('Results: ', results);
         // return an array of booleans in each corresponding position
+        // we need more info - the correct answer AND the answer the user chose
         return results;
 
-    }
+    } // checkAnswers
 
-    React.useEffect( () => {
-        checkAnswers(quizAnswers);
-    }, [quizAnswers]);
+
+    // a phone home function for the child component to send back data
+
+    function sendChoices(questionId, correctIndex, choiceIndex) {
+        
+        const object = {
+            questionId,
+            correctIndex,
+            choiceIndex
+        }
+
+        // ! answers have to be selected in the correct order
+        setChoiceData( prev => {
+            return [
+                ...prev,
+                object
+            ]
+        })
+
+        console.log('Quiz: sendChoices: ', object)
+    }
 
 
     return (
@@ -71,11 +95,11 @@ export default function Quiz(props) {
         className="questions-container flex-centered"
         onSubmit={handleSubmit}>
 
-            <Question question={questions[0]} />
-            <Question question={questions[1]} />
-            <Question question={questions[2]} />
-            <Question question={questions[3]} />
-            <Question question={questions[4]} />
+            <Question question={questions[0]} id={questionIds[0]} sendChoices={sendChoices}/>
+            <Question question={questions[1]} id={questionIds[1]} sendChoices={sendChoices} />
+            <Question question={questions[2]} id={questionIds[2]} sendChoices={sendChoices} />
+            <Question question={questions[3]} id={questionIds[3]} sendChoices={sendChoices} />
+            <Question question={questions[4]} id={questionIds[4]} sendChoices={sendChoices} />
 
 
             <button className="btn submit-btn">Check answers</button>

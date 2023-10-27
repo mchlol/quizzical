@@ -6,16 +6,21 @@ export default function Question(props) {
 
     const [question, setQuestion] = React.useState(props.question);
     const [shuffled, setShuffled] = React.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer));
+    const [correct, setCorrect] = React.useState(question.correct_answer); // ! is this needed?
+    const [correctIndex, setCorrectIndex] = React.useState(shuffled.indexOf(correct));
 
-    // TODO: for debugging only - remove before build
     // React.useEffect( () => {
-    //     console.log('Question: ', question);
-    //     console.log('Correct: ', correct);
-    //     console.log('Shuffled: ', shuffled);
+    //     setCorrectIndex(getCorrectIndex());
+    // },[]);
 
-    // }, [question]);
+    // // TODO: move helper functions into a utils file
 
-    // TODO: move 2 functions below into a utils file
+    // function getCorrectIndex() {
+    //     // get the index of the first string un shuffled that matches correctAnswer
+    //     const foundIndex = shuffled.indexOf(correct);
+    //     console.log(`Question: getCorrectIndex for ${props.id}`, foundIndex);
+    // }
+
     function shuffleAnswers(incorrectArr, correct) {
         /* 
         get the array of incorrect answers and the correct answers
@@ -31,6 +36,19 @@ export default function Question(props) {
         return decode(text, {level: 'html5' });
     }
 
+    // get the index of the user choice
+    let choiceIndex;
+    function setChoiceIndex(num, questionId) {
+        // console.log(`Question: setChoiceIndex for question ${questionId} is: `, num);
+        choiceIndex = num;
+        props.sendChoices(questionId, correctIndex, choiceIndex);
+        return num;
+    }
+
+    // send the info back to Quiz component
+    // ! called on each mount
+    
+
     return (
         <div>
             
@@ -39,22 +57,23 @@ export default function Question(props) {
             <div className="answers-container">
 
                 <span>
-                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} defaultChecked={true}/> 
+                {/* // ! ids need unique names in case 2 questions have the same options */}
+                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} onChange={() => setChoiceIndex(0, props.id)} /> 
                     <label htmlFor={shuffled[0]}> {decode(shuffled[0])} </label>
                 </span>
 
                 <span>
-                    <input type="radio" id={shuffled[1]} name={question.question} value={shuffled[1]} /> 
+                    <input type="radio" id={shuffled[1]} name={question.question} value={shuffled[1]} onChange={() => setChoiceIndex(1, props.id)} /> 
                     <label htmlFor={shuffled[1]}> {decode(shuffled[1])} </label>
                 </span>
 
                 <span>
-                    <input type="radio" id={shuffled[2]} name={question.question} value={shuffled[2]} /> 
+                    <input type="radio" id={shuffled[2]} name={question.question} value={shuffled[2]} onChange={() => setChoiceIndex(2, props.id)} /> 
                     <label htmlFor={shuffled[2]}> {decode(shuffled[2])}</label>
                 </span>
 
                 <span>
-                    <input type="radio" id={shuffled[3]} name={question.question} value={shuffled[3]} />
+                    <input type="radio" id={shuffled[3]} name={question.question} value={shuffled[3]} onChange={() => setChoiceIndex(3, props.id)} />
                     <label htmlFor={shuffled[3]}>
                      {decode(shuffled[3])}
                 </label>
