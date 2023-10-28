@@ -40,12 +40,6 @@ export default function Quiz(props) {
             correctAnswers.push(question.correct_answer);
         }
 
-        const correctIndexes = [];
-        // loop through each question
-        // return the index of the correct question in the shuffled array
-        // return the index of the user answer in the shuffled array
-        // ! the shuffled array only exists in the Question component
-
         // store the user answers returned from the form
         const userAnswers = Object.values(data);
 
@@ -59,7 +53,7 @@ export default function Quiz(props) {
             : results.push(false)
         };
 
-        // we need more info - the index of the correct answer AND the index of the answer the user chose
+        // * we need more info - the index of the correct answer AND the index of the answer the user chose
 
         // ! Validate: check if all the questions were answered & early return - where does this need to happen?
 
@@ -67,6 +61,12 @@ export default function Quiz(props) {
 
     } // checkAnswers
 
+    // get the correct index in the shuffled array for each question
+    const sendInfo = function(id, correctIndex, choiceIndex) {
+        console.log(id, correctIndex, choiceIndex);
+        // could use a piece of state for each question and use a setter function here to set this data to it when input is clicked?
+        
+    }
 
 
     return (
@@ -75,7 +75,7 @@ export default function Quiz(props) {
         className="questions-container flex-centered"
         onSubmit={handleSubmit}>
 
-            <Question question={questions[0]} id={questionIds[0]} />
+            <Question question={questions[0]} id={questionIds[0]} sendInfo={sendInfo}/>
             <Question question={questions[1]} id={questionIds[1]} />
             <Question question={questions[2]} id={questionIds[2]} />
             <Question question={questions[3]} id={questionIds[3]} />

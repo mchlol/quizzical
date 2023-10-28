@@ -5,10 +5,10 @@ import {decode} from 'html-entities';
 export default function Question(props) {
 
     const [question, setQuestion] = React.useState(props.question);
+    const [questionId, setQuestionId] = React.useState(props.id);
     const [shuffled, setShuffled] = React.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer)); 
     const [correct, setCorrect] = React.useState(question.correct_answer); // the correct answer string
     const [correctIndex, setCorrectIndex] = React.useState(shuffled.indexOf(correct)); // index of the correct answer in the shuffled array
-
 
     // TODO: utils
     function shuffleAnswers(incorrectArr, correct) {
@@ -26,6 +26,10 @@ export default function Question(props) {
         return decode(text, {level: 'html5' });
     }
 
+    React.useEffect( () => {
+        console.log(`${questionId} props`, props);
+    },[]);
+
 
     return (
         <div>
@@ -36,7 +40,7 @@ export default function Question(props) {
 
                 <span>
                 {/* // ! ids need unique names in case 2 questions have the same options */}
-                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} onChange={() => setChoiceIndex(0, props.id)} /> 
+                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} onChange={() => props.sendInfo(questionId, correctIndex, 0)} /> 
                     <label htmlFor={shuffled[0]}> {decode(shuffled[0])} </label>
                 </span>
 

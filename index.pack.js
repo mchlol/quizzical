@@ -4434,22 +4434,26 @@ function Question(props) {
         question = _React$useState2[0],
         setQuestion = _React$useState2[1];
 
-    var _React$useState3 = _react2.default.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer)),
+    var _React$useState3 = _react2.default.useState(props.id),
         _React$useState4 = _slicedToArray(_React$useState3, 2),
-        shuffled = _React$useState4[0],
-        setShuffled = _React$useState4[1];
+        questionId = _React$useState4[0],
+        setQuestionId = _React$useState4[1];
 
-    var _React$useState5 = _react2.default.useState(question.correct_answer),
+    var _React$useState5 = _react2.default.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer)),
         _React$useState6 = _slicedToArray(_React$useState5, 2),
-        correct = _React$useState6[0],
-        setCorrect = _React$useState6[1]; // the correct answer string
+        shuffled = _React$useState6[0],
+        setShuffled = _React$useState6[1];
 
-
-    var _React$useState7 = _react2.default.useState(shuffled.indexOf(correct)),
+    var _React$useState7 = _react2.default.useState(question.correct_answer),
         _React$useState8 = _slicedToArray(_React$useState7, 2),
-        correctIndex = _React$useState8[0],
-        setCorrectIndex = _React$useState8[1]; // index of the correct answer in the shuffled array
+        correct = _React$useState8[0],
+        setCorrect = _React$useState8[1]; // the correct answer string
 
+
+    var _React$useState9 = _react2.default.useState(shuffled.indexOf(correct)),
+        _React$useState10 = _slicedToArray(_React$useState9, 2),
+        correctIndex = _React$useState10[0],
+        setCorrectIndex = _React$useState10[1]; // index of the correct answer in the shuffled array
 
     // TODO: utils
 
@@ -4469,6 +4473,10 @@ function Question(props) {
         return (0, _htmlEntities.decode)(text, { level: 'html5' });
     }
 
+    _react2.default.useEffect(function () {
+        console.log(questionId + ' props', props);
+    }, []);
+
     return _react2.default.createElement(
         'div',
         null,
@@ -4484,7 +4492,7 @@ function Question(props) {
                 'span',
                 null,
                 _react2.default.createElement('input', { type: 'radio', id: shuffled[0], name: question.question, value: shuffled[0], onChange: function onChange() {
-                        return setChoiceIndex(0, props.id);
+                        return props.sendInfo(questionId, correctIndex, 0);
                     } }),
                 _react2.default.createElement(
                     'label',
@@ -4614,6 +4622,8 @@ function Quiz(props) {
 
                 correctAnswers.push(question.correct_answer);
             }
+
+            // store the user answers returned from the form
         } catch (err) {
             _didIteratorError = true;
             _iteratorError = err;
@@ -4629,13 +4639,6 @@ function Quiz(props) {
             }
         }
 
-        var correctIndexes = [];
-        // loop through each question
-        // return the index of the correct question in the shuffled array
-        // return the index of the user answer in the shuffled array
-        // ! the shuffled array only exists in the Question component
-
-        // store the user answers returned from the form
         var userAnswers = Object.values(data);
 
         console.log('Quiz: userAnswers: ', userAnswers); // an array of strings
@@ -4646,20 +4649,25 @@ function Quiz(props) {
             userAnswers[i] === correctAnswers[i] ? results.push(true) : results.push(false);
         };
 
-        // we need more info - the index of the correct answer AND the index of the answer the user chose
+        // * we need more info - the index of the correct answer AND the index of the answer the user chose
 
         // ! Validate: check if all the questions were answered & early return - where does this need to happen?
 
         return results;
     } // checkAnswers
 
+    // get the correct index in the shuffled array for each question
+    var sendInfo = function sendInfo(id, correctIndex, choiceIndex) {
+        console.log(id, correctIndex, choiceIndex);
+        // could use a piece of state for each question and use a setter function here to set this data to it when input is clicked?
+    };
 
     return _react2.default.createElement(
         "form",
         {
             className: "questions-container flex-centered",
             onSubmit: handleSubmit },
-        _react2.default.createElement(_Question2.default, { question: questions[0], id: questionIds[0] }),
+        _react2.default.createElement(_Question2.default, { question: questions[0], id: questionIds[0], sendInfo: sendInfo }),
         _react2.default.createElement(_Question2.default, { question: questions[1], id: questionIds[1] }),
         _react2.default.createElement(_Question2.default, { question: questions[2], id: questionIds[2] }),
         _react2.default.createElement(_Question2.default, { question: questions[3], id: questionIds[3] }),
