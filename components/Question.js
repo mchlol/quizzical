@@ -1,5 +1,7 @@
 import React from "react";
-import {decode} from 'html-entities';
+// import {decode} from 'html-entities';
+import { decodeText } from './utils.js'
+
 // import Answer from "./Answer";
 
 export default function Question(props) {
@@ -9,17 +11,20 @@ export default function Question(props) {
     const [correctAnswerIndex, setCorrectAnswerIndex] = React.useState(props.data.shuffledAnswers.correctIndex);
     const [selectedAnswer, setSelectedAnswer] = React.useState('');
 
+    // runs every time the component is updated
+    // components are updated every time state changes
     console.log('Question data: ', questionData)
 
     function handleClick(selected) {
         console.log('selected answer index: ',selected);
         console.log('correct index: ',correctAnswerIndex);
         setSelectedAnswer(selected);
-        console.log(selectedAnswer);
-    }
+        props.sendAnswer(props.id, selected);
+    };
+    
 
-    // loop through the answers and style the one that is selected?
-
+    // loop through the answers and style the one that is selected
+    // set the selected answer on click
     let btns = [];
     for (let i = 0; i < shuffledAnswers.length; i++) {
         btns.push(
@@ -28,18 +33,18 @@ export default function Question(props) {
             className={selectedAnswer === i ? 'answer-btn selected' : 'answer-btn'}
             onClick={() => handleClick(i)} 
             >
-                {decode(shuffledAnswers[i])}
+                {decodeText(shuffledAnswers[i])}
             </button>
         )
-    }
-
-    console.log(btns);
+    };
 
     return (
         <div>
-            <h3>{decode(questionData.question)}</h3>
+            <h3>{decodeText(questionData.question)}</h3>
 
             {btns}
+
+            {selectedAnswer}
 
         </div>
     )
