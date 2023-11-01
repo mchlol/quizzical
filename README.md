@@ -7,7 +7,7 @@ Final project for React Basics at [Scrimba](scrimba.com)
 [Pill radio buttons](https://codepen.io/rstacruz/pen/zWXJGj)
 
 ### Extras
-Specific to Scrimba projects, saving it here so I don't lose hours next time I do a Scrimba project  
+Specific to Scrimba projects, saving it here so I don't lose hours next time I do a Scrimba project 🤡  
 ```
 Step 1: cd in to your project and install 
 npm i babel-plugin-transform-object-rest-spread
