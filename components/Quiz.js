@@ -38,6 +38,7 @@ export default function Quiz() {
 
     },[]);
 
+    // send to the child component to get selections back for comparison
     function sendAnswer(questionId, selection) {
         console.log(`Selected answer index for ${questionId}: ${selection}`)
 
@@ -61,6 +62,7 @@ export default function Quiz() {
             correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
         }
         console.log('correctAnswerIndexes: ',correctAnswerIndexes);
+
     }
 
     if (error) {

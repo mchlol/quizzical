@@ -13,7 +13,7 @@ export default function Question(props) {
 
     // runs every time the component is updated
     // components are updated every time state changes
-    console.log('Question data: ', questionData)
+    // console.log('Question data: ', questionData)
 
     function handleClick(selected) {
         console.log('selected answer index: ',selected);

@@ -4442,9 +4442,7 @@ function Question(props) {
 
     // runs every time the component is updated
     // components are updated every time state changes
-
-
-    console.log('Question data: ', questionData);
+    // console.log('Question data: ', questionData)
 
     function handleClick(selected) {
         console.log('selected answer index: ', selected);
@@ -4569,6 +4567,7 @@ function Quiz() {
         });
     }, []);
 
+    // send to the child component to get selections back for comparison
     function sendAnswer(questionId, selection) {
         console.log("Selected answer index for " + questionId + ": " + selection);
 
