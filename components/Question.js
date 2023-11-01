@@ -4,65 +4,43 @@ import {decode} from 'html-entities';
 
 export default function Question(props) {
 
-    const [question, setQuestion] = React.useState(props.question);
-    const [questionId, setQuestionId] = React.useState(props.id);
-    const [shuffled, setShuffled] = React.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer)); 
-    const [correct, setCorrect] = React.useState(question.correct_answer); // the correct answer string
-    const [correctIndex, setCorrectIndex] = React.useState(shuffled.indexOf(correct)); // index of the correct answer in the shuffled array
+    const [questionData, setQuestionData] = React.useState(props.data);
+    const [shuffledAnswers, setShuffledAnswers] = React.useState(props.data.shuffledAnswers.shuffledArray);
+    const [correctAnswerIndex, setCorrectAnswerIndex] = React.useState(props.data.shuffledAnswers.correctIndex);
+    const [selectedAnswer, setSelectedAnswer] = React.useState('');
 
-    // TODO: utils
-    function shuffleAnswers(incorrectArr, correct) {
-        /* 
-        get the array of incorrect answers and the correct answers
-        get a random number from 0 - 4
-        use toSpliced to insert correct answer at the random index */
-        const correctIndex = Math.floor(Math.random() * 4);
-        const newArr = incorrectArr.toSpliced(correctIndex, 0, correct);
+    console.log('Question data: ', questionData)
 
-        return newArr;
+    function handleClick(selected) {
+        console.log('selected answer index: ',selected);
+        console.log('correct index: ',correctAnswerIndex);
+        setSelectedAnswer(selected);
+        console.log(selectedAnswer);
     }
 
-    function decodeText(text) {
-        return decode(text, {level: 'html5' });
+    // loop through the answers and style the one that is selected?
+
+    let btns = [];
+    for (let i = 0; i < shuffledAnswers.length; i++) {
+        btns.push(
+            <button 
+            key={`answer${i}`} 
+            className={selectedAnswer === i ? 'answer-btn selected' : 'answer-btn'}
+            onClick={() => handleClick(i)} 
+            >
+                {decode(shuffledAnswers[i])}
+            </button>
+        )
     }
 
-    React.useEffect( () => {
-        console.log(`${questionId} props`, props);
-    },[]);
-
+    console.log(btns);
 
     return (
         <div>
-            
-            <h3 className="question">{decodeText(question.question)}</h3>
-            
-            <div className="answers-container">
+            <h3>{decode(questionData.question)}</h3>
 
-                <span>
-                {/* // ! ids need unique names in case 2 questions have the same options */}
-                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} onChange={() => props.sendInfo(questionId, correctIndex, 0)} /> 
-                    <label htmlFor={shuffled[0]}> {decode(shuffled[0])} </label>
-                </span>
+            {btns}
 
-                <span>
-                    <input type="radio" id={shuffled[1]} name={question.question} value={shuffled[1]} onChange={() => setChoiceIndex(1, props.id)} /> 
-                    <label htmlFor={shuffled[1]}> {decode(shuffled[1])} </label>
-                </span>
-
-                <span>
-                    <input type="radio" id={shuffled[2]} name={question.question} value={shuffled[2]} onChange={() => setChoiceIndex(2, props.id)} /> 
-                    <label htmlFor={shuffled[2]}> {decode(shuffled[2])}</label>
-                </span>
-
-                <span>
-                    <input type="radio" id={shuffled[3]} name={question.question} value={shuffled[3]} onChange={() => setChoiceIndex(3, props.id)} />
-                    <label htmlFor={shuffled[3]}>
-                     {decode(shuffled[3])}
-                </label>
-                </span>
-            </div>
-            
-            <hr/>
         </div>
     )
 }

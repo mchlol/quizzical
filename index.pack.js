@@ -2560,10 +2560,6 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _axios = __webpack_require__(25);
-
-var _axios2 = _interopRequireDefault(_axios);
-
 var _Quiz = __webpack_require__(51);
 
 var _Quiz2 = _interopRequireDefault(_Quiz);
@@ -2573,57 +2569,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import Question from "./Question";
 
 function App() {
-
-    // set questions and pass as props to Quiz component
-
-    var _React$useState = _react2.default.useState([]),
+    var _React$useState = _react2.default.useState(false),
         _React$useState2 = _slicedToArray(_React$useState, 2),
-        questions = _React$useState2[0],
-        setQuestions = _React$useState2[1];
-
-    var _React$useState3 = _react2.default.useState(true),
-        _React$useState4 = _slicedToArray(_React$useState3, 2),
-        loading = _React$useState4[0],
-        setLoading = _React$useState4[1];
-
-    var _React$useState5 = _react2.default.useState(null),
-        _React$useState6 = _slicedToArray(_React$useState5, 2),
-        error = _React$useState6[0],
-        setError = _React$useState6[1];
-
-    // get the questions from api with axios
-
-
-    _react2.default.useEffect(function () {
-
-        setLoading(true);
-
-        _axios2.default.get('https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple').then(function (res) {
-            setQuestions(res.data.results);
-            setLoading(false);
-        }).catch(function (err) {
-            console.log(err);
-            setError(err);
-            setLoading(false);
-        });
-    }, []);
-
-    if (error) {
-        return _react2.default.createElement(
-            "p",
-            null,
-            "Error loading questions."
-        );
-    }
+        start = _React$useState2[0],
+        setStart = _React$useState2[1];
 
     return _react2.default.createElement(
-        "main",
-        { className: "flex-centered" },
-        loading ? _react2.default.createElement(
-            "p",
-            { className: "flex-centered" },
-            "Loading"
-        ) : _react2.default.createElement(_Quiz2.default, { questions: questions })
+        "div",
+        null,
+        start ? _react2.default.createElement(_Quiz2.default, null) : _react2.default.createElement(
+            "button",
+            { onClick: function onClick() {
+                    return setStart(true);
+                } },
+            "Start Quiz"
+        )
     );
 }
 
@@ -4429,120 +4389,68 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import Answer from "./Answer";
 
 function Question(props) {
-    var _React$useState = _react2.default.useState(props.question),
+    var _React$useState = _react2.default.useState(props.data),
         _React$useState2 = _slicedToArray(_React$useState, 2),
-        question = _React$useState2[0],
-        setQuestion = _React$useState2[1];
+        questionData = _React$useState2[0],
+        setQuestionData = _React$useState2[1];
 
-    var _React$useState3 = _react2.default.useState(props.id),
+    var _React$useState3 = _react2.default.useState(props.data.shuffledAnswers.shuffledArray),
         _React$useState4 = _slicedToArray(_React$useState3, 2),
-        questionId = _React$useState4[0],
-        setQuestionId = _React$useState4[1];
+        shuffledAnswers = _React$useState4[0],
+        setShuffledAnswers = _React$useState4[1];
 
-    var _React$useState5 = _react2.default.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer)),
+    var _React$useState5 = _react2.default.useState(props.data.shuffledAnswers.correctIndex),
         _React$useState6 = _slicedToArray(_React$useState5, 2),
-        shuffled = _React$useState6[0],
-        setShuffled = _React$useState6[1];
+        correctAnswerIndex = _React$useState6[0],
+        setCorrectAnswerIndex = _React$useState6[1];
 
-    var _React$useState7 = _react2.default.useState(question.correct_answer),
+    var _React$useState7 = _react2.default.useState(''),
         _React$useState8 = _slicedToArray(_React$useState7, 2),
-        correct = _React$useState8[0],
-        setCorrect = _React$useState8[1]; // the correct answer string
+        selectedAnswer = _React$useState8[0],
+        setSelectedAnswer = _React$useState8[1];
 
+    console.log('Question data: ', questionData);
 
-    var _React$useState9 = _react2.default.useState(shuffled.indexOf(correct)),
-        _React$useState10 = _slicedToArray(_React$useState9, 2),
-        correctIndex = _React$useState10[0],
-        setCorrectIndex = _React$useState10[1]; // index of the correct answer in the shuffled array
-
-    // TODO: utils
-
-
-    function shuffleAnswers(incorrectArr, correct) {
-        /* 
-        get the array of incorrect answers and the correct answers
-        get a random number from 0 - 4
-        use toSpliced to insert correct answer at the random index */
-        var correctIndex = Math.floor(Math.random() * 4);
-        var newArr = incorrectArr.toSpliced(correctIndex, 0, correct);
-
-        return newArr;
+    function handleClick(selected) {
+        console.log('selected answer index: ', selected);
+        console.log('correct index: ', correctAnswerIndex);
+        setSelectedAnswer(selected);
+        console.log(selectedAnswer);
     }
 
-    function decodeText(text) {
-        return (0, _htmlEntities.decode)(text, { level: 'html5' });
+    // loop through the answers and style the one that is selected?
+
+    var btns = [];
+
+    var _loop = function _loop(i) {
+        btns.push(_react2.default.createElement(
+            'button',
+            {
+                key: 'answer' + i,
+                className: selectedAnswer === i ? 'answer-btn selected' : 'answer-btn',
+                onClick: function onClick() {
+                    return handleClick(i);
+                }
+            },
+            (0, _htmlEntities.decode)(shuffledAnswers[i])
+        ));
+    };
+
+    for (var i = 0; i < shuffledAnswers.length; i++) {
+        _loop(i);
     }
 
-    _react2.default.useEffect(function () {
-        console.log(questionId + ' props', props);
-    }, []);
+    console.log(btns);
 
     return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
             'h3',
-            { className: 'question' },
-            decodeText(question.question)
+            null,
+            (0, _htmlEntities.decode)(questionData.question)
         ),
-        _react2.default.createElement(
-            'div',
-            { className: 'answers-container' },
-            _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('input', { type: 'radio', id: shuffled[0], name: question.question, value: shuffled[0], onChange: function onChange() {
-                        return props.sendInfo(questionId, correctIndex, 0);
-                    } }),
-                _react2.default.createElement(
-                    'label',
-                    { htmlFor: shuffled[0] },
-                    ' ',
-                    (0, _htmlEntities.decode)(shuffled[0]),
-                    ' '
-                )
-            ),
-            _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('input', { type: 'radio', id: shuffled[1], name: question.question, value: shuffled[1], onChange: function onChange() {
-                        return setChoiceIndex(1, props.id);
-                    } }),
-                _react2.default.createElement(
-                    'label',
-                    { htmlFor: shuffled[1] },
-                    ' ',
-                    (0, _htmlEntities.decode)(shuffled[1]),
-                    ' '
-                )
-            ),
-            _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('input', { type: 'radio', id: shuffled[2], name: question.question, value: shuffled[2], onChange: function onChange() {
-                        return setChoiceIndex(2, props.id);
-                    } }),
-                _react2.default.createElement(
-                    'label',
-                    { htmlFor: shuffled[2] },
-                    ' ',
-                    (0, _htmlEntities.decode)(shuffled[2])
-                )
-            ),
-            _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('input', { type: 'radio', id: shuffled[3], name: question.question, value: shuffled[3], onChange: function onChange() {
-                        return setChoiceIndex(3, props.id);
-                    } }),
-                _react2.default.createElement(
-                    'label',
-                    { htmlFor: shuffled[3] },
-                    (0, _htmlEntities.decode)(shuffled[3])
-                )
-            )
-        ),
-        _react2.default.createElement('hr', null)
+        btns
     );
 }
 
@@ -4565,118 +4473,69 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _axios = __webpack_require__(25);
+
+var _axios2 = _interopRequireDefault(_axios);
+
 var _Question = __webpack_require__(50);
 
 var _Question2 = _interopRequireDefault(_Question);
 
-var _nanoid = __webpack_require__(61);
+var _utils = __webpack_require__(72);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Quiz(props) {
-
-    var questions = props.questions; // data returned from the API
-
+function Quiz() {
     var _React$useState = _react2.default.useState([]),
         _React$useState2 = _slicedToArray(_React$useState, 2),
-        quizAnswers = _React$useState2[0],
-        setQuizAnswers = _React$useState2[1]; // data returned from the form - an object that contains only question/user answer pairs
+        allQuestions = _React$useState2[0],
+        setAllQuestions = _React$useState2[1];
 
-
-    var _React$useState3 = _react2.default.useState([(0, _nanoid.nanoid)(), (0, _nanoid.nanoid)(), (0, _nanoid.nanoid)(), (0, _nanoid.nanoid)(), (0, _nanoid.nanoid)()]),
+    var _React$useState3 = _react2.default.useState(null),
         _React$useState4 = _slicedToArray(_React$useState3, 2),
-        questionIds = _React$useState4[0],
-        setQuestionIds = _React$useState4[1]; // five unique ids in order for each question // ? how are these useful?
+        error = _React$useState4[0],
+        setError = _React$useState4[1];
 
+    var _React$useState5 = _react2.default.useState(true),
+        _React$useState6 = _slicedToArray(_React$useState5, 2),
+        loading = _React$useState6[0],
+        setLoading = _React$useState6[1];
 
-    function handleSubmit(e) {
-        e.preventDefault();
-        var form = e.target;
-        var formData = new FormData(form);
+    _react2.default.useEffect(function () {
+        _axios2.default.get('https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple').then(function (res) {
+            // console.log('res: ',res); // log the response
+            var results = res.data.results;
+            console.log('results: ', results);
+            // setAllQuestions(results);
+            var newData = Object.entries(results).map(function (questions) {
+                questions[1].shuffledAnswers = (0, _utils.shuffleAnswers)(questions[1].incorrect_answers, questions[1].correct_answer);
+                return questions;
+            });
+            setAllQuestions(newData);
 
-        var formJson = Object.fromEntries(formData.entries());
-        console.log('Quiz: formJson ', formJson);
+            setLoading(false);
+        }).catch(function (err) {
+            console.log('err: ', err);
+            setLoading(false);
+        });
+    }, []);
 
-        // set the form data in state
-        setQuizAnswers(formJson); // gets the question and the user answer
-
-        // checks the answers
-        var results = checkAnswers(quizAnswers);
-        console.log('Results from form submit: ', results);
-
-        // TODO: render the score at the bottom
-        // TODO: render a new button that says play again and triggers a re-render of the quiz component with new questions
-    } // handleSubmit
-
-    function checkAnswers(data) {
-
-        // extract all the correct answers from each question object
-        var correctAnswers = [];
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-            for (var _iterator = questions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var question = _step.value;
-
-                correctAnswers.push(question.correct_answer);
-            }
-
-            // store the user answers returned from the form
-        } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
-                }
-            } finally {
-                if (_didIteratorError) {
-                    throw _iteratorError;
-                }
-            }
-        }
-
-        var userAnswers = Object.values(data);
-
-        console.log('Quiz: userAnswers: ', userAnswers); // an array of strings
-
-        // loop through the user answers and compare to the correct answers
-        var results = []; // will be an array of booleans
-        for (var i = 0; i < userAnswers.length; i++) {
-            userAnswers[i] === correctAnswers[i] ? results.push(true) : results.push(false);
-        };
-
-        // * we need more info - the index of the correct answer AND the index of the answer the user chose
-
-        // ! Validate: check if all the questions were answered & early return - where does this need to happen?
-
-        return results;
-    } // checkAnswers
-
-    // get the correct index in the shuffled array for each question
-    var sendInfo = function sendInfo(id, correctIndex, choiceIndex) {
-        console.log(id, correctIndex, choiceIndex);
-        // could use a piece of state for each question and use a setter function here to set this data to it when input is clicked?
-    };
+    if (error) {
+        return _react2.default.createElement(
+            "p",
+            null,
+            "Could not retrieve questions. Please try again."
+        );
+    }
 
     return _react2.default.createElement(
-        "form",
-        {
-            className: "questions-container flex-centered",
-            onSubmit: handleSubmit },
-        _react2.default.createElement(_Question2.default, { question: questions[0], id: questionIds[0], sendInfo: sendInfo }),
-        _react2.default.createElement(_Question2.default, { question: questions[1], id: questionIds[1] }),
-        _react2.default.createElement(_Question2.default, { question: questions[2], id: questionIds[2] }),
-        _react2.default.createElement(_Question2.default, { question: questions[3], id: questionIds[3] }),
-        _react2.default.createElement(_Question2.default, { question: questions[4], id: questionIds[4] }),
-        _react2.default.createElement(
-            "button",
-            { className: "btn submit-btn" },
-            "Check answers"
-        )
+        "div",
+        null,
+        loading ? _react2.default.createElement(
+            "em",
+            null,
+            "Loading..."
+        ) : _react2.default.createElement(_Question2.default, { data: allQuestions[0][1] })
     );
 }
 
@@ -6985,64 +6844,8 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 61 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "random", function() { return random; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customRandom", function() { return customRandom; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customAlphabet", function() { return customAlphabet; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nanoid", function() { return nanoid; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__ = __webpack_require__(62);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "urlAlphabet", function() { return __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__["a"]; });
-
-let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
-let customRandom = (alphabet, defaultSize, getRandom) => {
-  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
-  let step = -~((1.6 * mask * defaultSize) / alphabet.length)
-  return (size = defaultSize) => {
-    let id = ''
-    while (true) {
-      let bytes = getRandom(step)
-      let j = step
-      while (j--) {
-        id += alphabet[bytes[j] & mask] || ''
-        if (id.length === size) return id
-      }
-    }
-  }
-}
-let customAlphabet = (alphabet, size = 21) =>
-  customRandom(alphabet, size, random)
-let nanoid = (size = 21) =>
-  crypto.getRandomValues(new Uint8Array(size)).reduce((id, byte) => {
-    byte &= 63
-    if (byte < 36) {
-      id += byte.toString(36)
-    } else if (byte < 62) {
-      id += (byte - 26).toString(36).toUpperCase()
-    } else if (byte > 62) {
-      id += '-'
-    } else {
-      id += '_'
-    }
-    return id
-  }, '')
-
-
-/***/ }),
-/* 62 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const urlAlphabet =
-  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
-/* harmony export (immutable) */ __webpack_exports__["a"] = urlAlphabet;
-
-
-
-/***/ }),
+/* 61 */,
+/* 62 */,
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -37053,6 +36856,35 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.shuffleAnswers = shuffleAnswers;
+exports.decodeText = decodeText;
+
+var _htmlEntities = __webpack_require__(55);
+
+function shuffleAnswers(incorrectArr, correct) {
+    var correctIndex = Math.floor(Math.random() * 4);
+    var newArr = incorrectArr.toSpliced(correctIndex, 0, correct);
+
+    return {
+        shuffledArray: newArr,
+        correctIndex: correctIndex
+    };
+}
+
+function decodeText(text) {
+    return (0, _htmlEntities.decode)(text, { level: 'html5' });
+}
 
 /***/ })
 /******/ ]);
