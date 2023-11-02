@@ -55,7 +55,8 @@ h3.question {
     gap: 1em;
 }
 
-.btn {
+button {
+    border: 1px solid transparent;
     border-radius: 8px;
     padding: 0.5em 1em;
     font-family: 'Inter', sans-serif;
@@ -84,17 +85,11 @@ h3.question {
     background-color: var(--incorrect);
 }
 
-label {
+.answer-btn {
     font-size: 14px;
     background-color: inherit;
     color: var(--dark-blue);
     border: 1px solid var(--blue);
-    border-radius: 8px;
-    padding: 0.5em 1em;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 12px;
-    cursor: pointer;
 }
 
 input[type='radio'] {
