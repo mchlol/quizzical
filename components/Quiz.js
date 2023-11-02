@@ -8,12 +8,14 @@ export default function Quiz() {
     const BASE_URL = 'https://opentdb.com/api.php';
     const amount = 5;
     const difficulty = 'easy';
-    // future feature considerations: set amount, difficulty, category
+    // * future feature considerations: set amount, difficulty, category
 
     const [allQuestions, setAllQuestions] = React.useState([]);
     const [error, setError] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
     const [selectedAnswers, setSelectedAnswers] = React.useState([]);
+    const [finished, setFinished] = React.useState(false);
+    const [score, setScore] = React.useState(null);
 
     console.log('Quiz selectedAnswers: ',selectedAnswers);
 
@@ -53,6 +55,11 @@ export default function Quiz() {
     function checkAnswers() {
         console.log('checking answers');
         console.log('selectedAnswers indexes ',selectedAnswers);
+        for (let i = 0; i < selectedAnswers.length; i++) {
+            console.log(selectedAnswers[i]);
+            // ! need to check all questions were answers ie. that each questionId has a corresponding answer
+            // ? try hasOwnProperty() 
+        }
         
         // get an array of all the correct answers
         // loop through the AllQuestions data
@@ -63,13 +70,31 @@ export default function Quiz() {
         }
         console.log('correctAnswerIndexes: ',correctAnswerIndexes);
 
+        // check which answers were correct
+        let scoreHolder = 0;
+        let arr = [];
+        for (let i = 0; i < correctAnswerIndexes.length; i++) {
+            console.log(`Selected answer to question${i}: `, Object.values(selectedAnswers)[i]);
+            console.log(`Correct answer to question${i}: `, correctAnswerIndexes[i]);
+            if (Object.values(selectedAnswers)[i] === correctAnswerIndexes[i]) {
+                arr.push(true);
+                scoreHolder++;
+            } else {
+                arr.push(false)
+            }
+        }
+        console.log('arr: ',arr)
+        console.log('Score: ',scoreHolder)
+        setScore(scoreHolder);
+        setFinished(true); // ! 
+
     }
 
     if (error) {
         return <p>Could not retrieve questions. Please try again.</p>
     }
 
-    // TODO: dynamically render questions from state
+    // TODO: dynamically render question components from state
     
 
     return (
@@ -78,7 +103,8 @@ export default function Quiz() {
             loading 
             ? <em>Loading...</em>
             : 
-                <div>
+                <div> 
+                {/* This component needs to be re-rendered on finished with new styles */}
                     <div>
                     <Question 
                         data={allQuestions[0][1]} 
@@ -107,7 +133,17 @@ export default function Quiz() {
                     />
                     </div>
                     <br />
-                    <button onClick={checkAnswers}>Check answers</button>
+                    {
+                        finished 
+                        ?  
+                            <div>
+                                <p>You scored {score}/5 correct answers</p>
+                                <button>Play Again</button>
+                            </div>
+                        : 
+                            <button onClick={checkAnswers}>Check answers</button>
+                    }
+                    
                 </div>
         }
         </div>

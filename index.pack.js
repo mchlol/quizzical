@@ -4526,7 +4526,7 @@ function Quiz() {
     var BASE_URL = 'https://opentdb.com/api.php';
     var amount = 5;
     var difficulty = 'easy';
-    // future feature considerations: set amount, difficulty, category
+    // * future feature considerations: set amount, difficulty, category
 
     var _React$useState = _react2.default.useState([]),
         _React$useState2 = _slicedToArray(_React$useState, 2),
@@ -4547,6 +4547,16 @@ function Quiz() {
         _React$useState8 = _slicedToArray(_React$useState7, 2),
         selectedAnswers = _React$useState8[0],
         setSelectedAnswers = _React$useState8[1];
+
+    var _React$useState9 = _react2.default.useState(false),
+        _React$useState10 = _slicedToArray(_React$useState9, 2),
+        finished = _React$useState10[0],
+        setFinished = _React$useState10[1];
+
+    var _React$useState11 = _react2.default.useState(null),
+        _React$useState12 = _slicedToArray(_React$useState11, 2),
+        score = _React$useState12[0],
+        setScore = _React$useState12[1];
 
     console.log('Quiz selectedAnswers: ', selectedAnswers);
 
@@ -4579,15 +4589,38 @@ function Quiz() {
     function checkAnswers() {
         console.log('checking answers');
         console.log('selectedAnswers indexes ', selectedAnswers);
+        for (var i = 0; i < selectedAnswers.length; i++) {
+            console.log(selectedAnswers[i]);
+            // ! need to check all questions were answers ie. that each questionId has a corresponding answer
+            // ? try hasOwnProperty() 
+        }
 
         // get an array of all the correct answers
         // loop through the AllQuestions data
         var correctAnswerIndexes = [];
-        for (var i = 0; i < allQuestions.length; i++) {
+        for (var _i = 0; _i < allQuestions.length; _i++) {
             console.log('allQuestion shuffled answers');
-            correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
+            correctAnswerIndexes.push(allQuestions[_i][1].shuffledAnswers.correctIndex);
         }
         console.log('correctAnswerIndexes: ', correctAnswerIndexes);
+
+        // check which answers were correct
+        var scoreHolder = 0;
+        var arr = [];
+        for (var _i2 = 0; _i2 < correctAnswerIndexes.length; _i2++) {
+            console.log("Selected answer to question" + _i2 + ": ", Object.values(selectedAnswers)[_i2]);
+            console.log("Correct answer to question" + _i2 + ": ", correctAnswerIndexes[_i2]);
+            if (Object.values(selectedAnswers)[_i2] === correctAnswerIndexes[_i2]) {
+                arr.push(true);
+                scoreHolder++;
+            } else {
+                arr.push(false);
+            }
+        }
+        console.log('arr: ', arr);
+        console.log('Score: ', scoreHolder);
+        setScore(scoreHolder);
+        setFinished(true); // ! 
     }
 
     if (error) {
@@ -4598,7 +4631,7 @@ function Quiz() {
         );
     }
 
-    // TODO: dynamically render questions from state
+    // TODO: dynamically render question components from state
 
 
     return _react2.default.createElement(
@@ -4641,7 +4674,22 @@ function Quiz() {
                 })
             ),
             _react2.default.createElement("br", null),
-            _react2.default.createElement(
+            finished ? _react2.default.createElement(
+                "div",
+                null,
+                _react2.default.createElement(
+                    "p",
+                    null,
+                    "You scored ",
+                    score,
+                    "/5 correct answers"
+                ),
+                _react2.default.createElement(
+                    "button",
+                    null,
+                    "Play Again"
+                )
+            ) : _react2.default.createElement(
                 "button",
                 { onClick: checkAnswers },
                 "Check answers"
