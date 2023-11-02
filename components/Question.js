@@ -1,64 +1,87 @@
 import React from "react";
-import {decode} from 'html-entities';
+// import {decode} from 'html-entities';
+import { decodeText } from './utils.js'
+
 // import Answer from "./Answer";
 
 export default function Question(props) {
 
-    const [question, setQuestion] = React.useState(props.question);
-    const [shuffled, setShuffled] = React.useState(shuffleAnswers(question.incorrect_answers, question.correct_answer)); 
-    const [correct, setCorrect] = React.useState(question.correct_answer); // the correct answer string
-    const [correctIndex, setCorrectIndex] = React.useState(shuffled.indexOf(correct)); // index of the correct answer in the shuffled array
+    const [questionData, setQuestionData] = React.useState(props.data);
+    const [shuffledAnswers, setShuffledAnswers] = React.useState(props.data.shuffledAnswers.shuffledArray);
+    const [correctAnswerIndex, setCorrectAnswerIndex] = React.useState(props.data.shuffledAnswers.correctIndex);
+    const [selectedAnswer, setSelectedAnswer] = React.useState('');
+    const [finished, setFinished] = React.useState(props.finished);
 
+    React.useEffect( () => {
+        setFinished(props.finished);
+    },[props.finished])
 
-    // TODO: utils
-    function shuffleAnswers(incorrectArr, correct) {
-        /* 
-        get the array of incorrect answers and the correct answers
-        get a random number from 0 - 4
-        use toSpliced to insert correct answer at the random index */
-        const correctIndex = Math.floor(Math.random() * 4);
-        const newArr = incorrectArr.toSpliced(correctIndex, 0, correct);
+    function handleClick(selected) {
+        setSelectedAnswer(selected);
+        props.sendAnswer(props.id, selected);
+    };
 
-        return newArr;
+    function applyClassNames(index) {
+        let classNames = 'answer-btn'; // applied regardless of state
+        
+        // buttons are looped over below, and styles applied per this function
+        // we have access to the index of that button
+    
+        // if game is still in play finished will be false
+        // on click finished will be true
+        // so if finished, 
+        //   a selected button that is correct will be 'answer-btn selected correct'
+        //   a selected button that is incorrect will be 'answer-btn selected incorrect'
+        //   a button that is not selected will be 'answer-btn' // ! duplicated
+        // if NOT finished
+        //   a selected button will be 'answer-btn selected'
+        //   a button not selected will still just be 'answer-btn' // ! duplicated
+
+        if (finished) {
+            // selected and correct
+            if (index === selectedAnswer && selectedAnswer === correctAnswerIndex) {
+                classNames = 'answer-btn selected correct';
+            // selected and incorrect
+            } else if (index === selectedAnswer && selectedAnswer !== correctAnswerIndex) {
+                classNames = 'answer-btn selected incorrect';
+            } else {
+                classNames = 'answer-btn';
+            }
+        } else {
+            if (index === selectedAnswer) {
+                classNames = 'answer-btn selected';
+            } else {
+                classNames = 'answer-btn'
+            }
+        }
+        
+        return classNames;
     }
+    
 
-    function decodeText(text) {
-        return decode(text, {level: 'html5' });
-    }
-
+    // loop through the answers and style the one that is selected
+    // set the selected answer on click
+    let btns = [];
+    for (let i = 0; i < shuffledAnswers.length; i++) {
+        btns.push(
+            <button 
+            key={`answer${i}`} 
+            className={applyClassNames(i)} 
+            onClick={() => handleClick(i)} 
+            >
+                {decodeText(shuffledAnswers[i])}
+            </button>
+        )
+    };
 
     return (
         <div>
-            
-            <h3 className="question">{decodeText(question.question)}</h3>
-            
+            <h3>{decodeText(questionData.question)}</h3>
+
             <div className="answers-container">
-
-                <span>
-                {/* // ! ids need unique names in case 2 questions have the same options */}
-                    <input type="radio" id={shuffled[0]} name={question.question} value={shuffled[0]} onChange={() => setChoiceIndex(0, props.id)} /> 
-                    <label htmlFor={shuffled[0]}> {decode(shuffled[0])} </label>
-                </span>
-
-                <span>
-                    <input type="radio" id={shuffled[1]} name={question.question} value={shuffled[1]} onChange={() => setChoiceIndex(1, props.id)} /> 
-                    <label htmlFor={shuffled[1]}> {decode(shuffled[1])} </label>
-                </span>
-
-                <span>
-                    <input type="radio" id={shuffled[2]} name={question.question} value={shuffled[2]} onChange={() => setChoiceIndex(2, props.id)} /> 
-                    <label htmlFor={shuffled[2]}> {decode(shuffled[2])}</label>
-                </span>
-
-                <span>
-                    <input type="radio" id={shuffled[3]} name={question.question} value={shuffled[3]} onChange={() => setChoiceIndex(3, props.id)} />
-                    <label htmlFor={shuffled[3]}>
-                     {decode(shuffled[3])}
-                </label>
-                </span>
+                {btns}
             </div>
-            
-            <hr/>
+
         </div>
     )
 }

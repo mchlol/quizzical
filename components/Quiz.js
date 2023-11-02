@@ -1,89 +1,165 @@
 import React from "react";
+import axios, { all } from "axios";
 import Question from "./Question";
-import { nanoid } from "nanoid";
+import { shuffleAnswers } from './utils.js'
 
-export default function Quiz(props) {
+export default function Quiz() {
 
-    const questions = props.questions; // data returned from the API
+    // settings for the API call
+    const BASE_URL = 'https://opentdb.com/api.php';
+    const amount = 5;
+    const difficulty = 'easy';
+    // * future feature considerations: set amount, difficulty, category
 
-    const [quizAnswers, setQuizAnswers] = React.useState([]); // data returned from the form - an object that contains only question/user answer pairs
-    const [questionIds, setQuestionIds] = React.useState([
-        nanoid(), nanoid(), nanoid(), nanoid(), nanoid()
-    ]) // five unique ids in order for each question // ? how are these useful?
+    // state
+    const [allQuestions, setAllQuestions] = React.useState([]);
+    const [error, setError] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
 
+    const [correctAnswers, setCorrectAnswers] = React.useState([]);
+    const [selectedAnswers, setSelectedAnswers] = React.useState([]);
 
-    function handleSubmit(e) {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-        
-        const formJson = Object.fromEntries(formData.entries());
-        console.log('Quiz: formJson ',formJson);
+    const [finished, setFinished] = React.useState(false);
+    const [score, setScore] = React.useState(null);
 
-        // set the form data in state
-        setQuizAnswers(formJson); // gets the question and the user answer
+    // test
+    const [styles, setStyles] = React.useState('answer-btn');
 
-        // checks the answers
-        const results = checkAnswers(quizAnswers);
-        console.log('Results from form submit: ', results)
+    // get data from the API
+    React.useEffect( () => {
+        axios.get(`${BASE_URL}?amount=${amount}&difficulty=${difficulty}&type=multiple`)
+        .then( res => {
+            const results = res.data.results;
+            // shuffle the answers into a new array, add it as a property on the original object, along with the index of the correct answer in the shuffled array
+            const newData = Object.entries(results).map(questions => {
+                questions[1].shuffledAnswers = shuffleAnswers(questions[1].incorrect_answers, questions[1].correct_answer);
+                return questions;
+            });
+            setAllQuestions(newData);
+            // get the index for each correct answer in the shuffled array
+            setCorrectAnswers( () => {
+                let correctAnswerIndexes = [];
+                for (let i = 0; i < newData.length; i++) {
+                    correctAnswerIndexes.push(newData[i][1].shuffledAnswers.correctIndex);
+                }
+                return correctAnswerIndexes;
+            })
+            setLoading(false);
+        })
+        .catch (err => {
+            console.log('err: ',err)
+            setError(err);
+            setLoading(false);
 
-        // TODO: render the score at the bottom
-        // TODO: render a new button that says play again and triggers a re-render of the quiz component with new questions
+        })
 
-    } // handleSubmit
+    },[]);
 
-    function checkAnswers(data) {
-        
-        // extract all the correct answers from each question object
-        const correctAnswers = [];
-        for (const question of questions) {
-            correctAnswers.push(question.correct_answer);
+    // when an answer is clicked it sends that index back to the Quiz component and updates the state for selectedAnswers
+    function sendAnswer(questionId, selection) {
+        console.log(`Selected answer index for ${questionId}: ${selection}`)
+
+        setSelectedAnswers( prevSelectedAnswers => {
+            return {
+                ...prevSelectedAnswers,
+                [questionId]: selection
+            }
+        })
+    } // sendAnswer
+
+    function checkAnswers() {
+
+        // check which answers were correct
+        let scoreHolder = 0;
+        let arr = [];
+        for (let i = 0; i < correctAnswers.length; i++) {
+            if (Object.values(selectedAnswers)[i] === correctAnswers[i]) {
+                arr.push(true);
+                scoreHolder++;
+            } else {
+                arr.push(false)
+                // if any question was not answered its value will be just be false
+            }
         }
+        setScore(scoreHolder);
+        // set styles - 'answer-btn correct' if right or 'answer-btn incorrect' if wrong
+        // requires more looping...
+        setFinished(true);
 
-        const correctIndexes = [];
-        // loop through each question
-        // return the index of the correct question in the shuffled array
-        // return the index of the user answer in the shuffled array
-        // ! the shuffled array only exists in the Question component
+    }
 
-        // store the user answers returned from the form
-        const userAnswers = Object.values(data);
+    if (error) {
+        return <p>Could not retrieve questions. Please try again.</p>
+    }
 
-        console.log('Quiz: userAnswers: ',userAnswers); // an array of strings
-
-        // loop through the user answers and compare to the correct answers
-        const results = []; // will be an array of booleans
-        for (let i = 0; i < userAnswers.length; i++) {
-            userAnswers[i] === correctAnswers[i]
-            ? results.push(true)
-            : results.push(false)
-        };
-
-        // we need more info - the index of the correct answer AND the index of the answer the user chose
-
-        // ! Validate: check if all the questions were answered & early return - where does this need to happen?
-
-        return results;
-
-    } // checkAnswers
-
-
+    // TODO: dynamically render question components from state
+    // if we put an array of components in state
+    // can we re-render them?
+    
 
     return (
-
-        <form 
-        className="questions-container flex-centered"
-        onSubmit={handleSubmit}>
-
-            <Question question={questions[0]} id={questionIds[0]} />
-            <Question question={questions[1]} id={questionIds[1]} />
-            <Question question={questions[2]} id={questionIds[2]} />
-            <Question question={questions[3]} id={questionIds[3]} />
-            <Question question={questions[4]} id={questionIds[4]} />
-
-
-            <button className="btn submit-btn">Check answers</button>
-
-        </form>
+        <div>
+        {
+            loading 
+            ? <em>Loading...</em>
+            : 
+                <div className="flex-centered"> 
+                    <div className="questions-container">
+                    <Question 
+                        data={allQuestions[0][1]} 
+                        id={'question0'} 
+                        correct={correctAnswers[0]}
+                        sendAnswer={sendAnswer} 
+                        finished={finished}
+                    />
+                    <hr />
+                    <Question 
+                        data={allQuestions[1][1]} 
+                        id={'question1'} 
+                        correct={correctAnswers[1]}
+                        sendAnswer={sendAnswer} 
+                        finished={finished}
+                    />
+                    <hr />
+                    <Question 
+                        data={allQuestions[2][1]} 
+                        id={'question2'} 
+                        correct={correctAnswers[2]}
+                        sendAnswer={sendAnswer} 
+                        finished={finished}
+                    />
+                    <hr />
+                    <Question 
+                        data={allQuestions[3][1]} 
+                        id={'question3'} 
+                        correct={correctAnswers[3]}
+                        sendAnswer={sendAnswer} 
+                        finished={finished}
+                    />
+                    <hr />
+                    <Question 
+                        data={allQuestions[4][1]} 
+                        id={'question4'} 
+                        correct={correctAnswers[4]}
+                        sendAnswer={sendAnswer} 
+                        finished={finished}
+                    />
+                    </div>
+                    <br />
+                    {
+                        finished 
+                        ?  
+                            <div>
+                                <p>You scored {score}/5 correct answers</p>
+                                <button className="submit-btn">Play Again</button>
+                            </div>
+                        : 
+                            <button className="submit-btn" onClick={checkAnswers}>Check answers</button>
+                    }
+                    
+                </div>
+        }
+        </div>
+        
     )
 }
