@@ -73,6 +73,15 @@ button {
     padding: 1em 1.5em;
 }
 
+.loading-div {
+    margin-top: 2em;
+}
+
+.end-p {
+    display: inline-block;
+    margin-right: 0.5em;
+}
+
 .answer-btn.selected {
     background-color: var(--blue-grey);
 }
