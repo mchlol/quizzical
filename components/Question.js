@@ -12,6 +12,10 @@ export default function Question(props) {
     const [selectedAnswer, setSelectedAnswer] = React.useState('');
     const [finished, setFinished] = React.useState(props.finished);
 
+    React.useEffect( () => {
+        setFinished(props.finished);
+    },[props.finished])
+
     function handleClick(selected) {
         setSelectedAnswer(selected);
         props.sendAnswer(props.id, selected);
@@ -74,7 +78,9 @@ export default function Question(props) {
         <div>
             <h3>{decodeText(questionData.question)}</h3>
 
-            {btns}
+            <div className="answers-container">
+                {btns}
+            </div>
 
         </div>
     )
