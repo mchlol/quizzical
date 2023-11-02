@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import axios, { all } from "axios";
 import Question from "./Question";
 import { shuffleAnswers } from './utils.js'
 
@@ -53,40 +53,27 @@ export default function Quiz() {
     } // sendAnswer
 
     function checkAnswers() {
-        console.log('checking answers');
-        console.log('selectedAnswers indexes ',selectedAnswers);
-        for (let i = 0; i < selectedAnswers.length; i++) {
-            console.log(selectedAnswers[i]);
-            // ! need to check all questions were answers ie. that each questionId has a corresponding answer
-            // ? try hasOwnProperty() 
-        }
-        
         // get an array of all the correct answers
         // loop through the AllQuestions data
         let correctAnswerIndexes = [];
         for (let i = 0; i < allQuestions.length; i++) {
-            console.log('allQuestion shuffled answers')
             correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
         }
-        console.log('correctAnswerIndexes: ',correctAnswerIndexes);
 
         // check which answers were correct
         let scoreHolder = 0;
         let arr = [];
         for (let i = 0; i < correctAnswerIndexes.length; i++) {
-            console.log(`Selected answer to question${i}: `, Object.values(selectedAnswers)[i]);
-            console.log(`Correct answer to question${i}: `, correctAnswerIndexes[i]);
             if (Object.values(selectedAnswers)[i] === correctAnswerIndexes[i]) {
                 arr.push(true);
                 scoreHolder++;
             } else {
                 arr.push(false)
+                // if any question was not answered its value will be just be false
             }
         }
-        console.log('arr: ',arr)
-        console.log('Score: ',scoreHolder)
         setScore(scoreHolder);
-        setFinished(true); // ! 
+        setFinished(true);
 
     }
 

@@ -11,13 +11,7 @@ export default function Question(props) {
     const [correctAnswerIndex, setCorrectAnswerIndex] = React.useState(props.data.shuffledAnswers.correctIndex);
     const [selectedAnswer, setSelectedAnswer] = React.useState('');
 
-    // runs every time the component is updated
-    // components are updated every time state changes
-    // console.log('Question data: ', questionData)
-
     function handleClick(selected) {
-        console.log('selected answer index: ',selected);
-        console.log('correct index: ',correctAnswerIndex);
         setSelectedAnswer(selected);
         props.sendAnswer(props.id, selected);
     };
@@ -27,6 +21,7 @@ export default function Question(props) {
     // set the selected answer on click
     let btns = [];
     for (let i = 0; i < shuffledAnswers.length; i++) {
+        console.log(i === correctAnswerIndex);
         btns.push(
             <button 
             key={`answer${i}`} 

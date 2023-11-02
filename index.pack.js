@@ -4440,13 +4440,7 @@ function Question(props) {
         selectedAnswer = _React$useState8[0],
         setSelectedAnswer = _React$useState8[1];
 
-    // runs every time the component is updated
-    // components are updated every time state changes
-    // console.log('Question data: ', questionData)
-
     function handleClick(selected) {
-        console.log('selected answer index: ', selected);
-        console.log('correct index: ', correctAnswerIndex);
         setSelectedAnswer(selected);
         props.sendAnswer(props.id, selected);
     };
@@ -4456,6 +4450,7 @@ function Question(props) {
     var btns = [];
 
     var _loop = function _loop(i) {
+        console.log(i === correctAnswerIndex);
         btns.push(_react2.default.createElement(
             'button',
             {
@@ -4587,40 +4582,27 @@ function Quiz() {
     } // sendAnswer
 
     function checkAnswers() {
-        console.log('checking answers');
-        console.log('selectedAnswers indexes ', selectedAnswers);
-        for (var i = 0; i < selectedAnswers.length; i++) {
-            console.log(selectedAnswers[i]);
-            // ! need to check all questions were answers ie. that each questionId has a corresponding answer
-            // ? try hasOwnProperty() 
-        }
-
         // get an array of all the correct answers
         // loop through the AllQuestions data
         var correctAnswerIndexes = [];
-        for (var _i = 0; _i < allQuestions.length; _i++) {
-            console.log('allQuestion shuffled answers');
-            correctAnswerIndexes.push(allQuestions[_i][1].shuffledAnswers.correctIndex);
+        for (var i = 0; i < allQuestions.length; i++) {
+            correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
         }
-        console.log('correctAnswerIndexes: ', correctAnswerIndexes);
 
         // check which answers were correct
         var scoreHolder = 0;
         var arr = [];
-        for (var _i2 = 0; _i2 < correctAnswerIndexes.length; _i2++) {
-            console.log("Selected answer to question" + _i2 + ": ", Object.values(selectedAnswers)[_i2]);
-            console.log("Correct answer to question" + _i2 + ": ", correctAnswerIndexes[_i2]);
-            if (Object.values(selectedAnswers)[_i2] === correctAnswerIndexes[_i2]) {
+        for (var _i = 0; _i < correctAnswerIndexes.length; _i++) {
+            if (Object.values(selectedAnswers)[_i] === correctAnswerIndexes[_i]) {
                 arr.push(true);
                 scoreHolder++;
             } else {
                 arr.push(false);
+                // if any question was not answered its value will be just be false
             }
         }
-        console.log('arr: ', arr);
-        console.log('Score: ', scoreHolder);
         setScore(scoreHolder);
-        setFinished(true); // ! 
+        setFinished(true);
     }
 
     if (error) {
