@@ -4440,22 +4440,63 @@ function Question(props) {
         selectedAnswer = _React$useState8[0],
         setSelectedAnswer = _React$useState8[1];
 
+    var _React$useState9 = _react2.default.useState(props.finished),
+        _React$useState10 = _slicedToArray(_React$useState9, 2),
+        finished = _React$useState10[0],
+        setFinished = _React$useState10[1];
+
     function handleClick(selected) {
         setSelectedAnswer(selected);
         props.sendAnswer(props.id, selected);
     };
+
+    function applyClassNames(index) {
+        var classNames = 'answer-btn'; // applied regardless of state
+
+        // buttons are looped over below, and styles applied per this function
+        // we have access to the index of that button
+
+        // if game is still in play finished will be false
+        // on click finished will be true
+        // so if finished, 
+        //   a selected button that is correct will be 'answer-btn selected correct'
+        //   a selected button that is incorrect will be 'answer-btn selected incorrect'
+        //   a button that is not selected will be 'answer-btn' // ! duplicated
+        // if NOT finished
+        //   a selected button will be 'answer-btn selected'
+        //   a button not selected will still just be 'answer-btn' // ! duplicated
+
+        if (finished) {
+            // selected and correct
+            if (index === selectedAnswer && selectedAnswer === correctAnswerIndex) {
+                classNames = 'answer-btn selected correct';
+                // selected and incorrect
+            } else if (index === selectedAnswer && selectedAnswer !== correctAnswerIndex) {
+                classNames = 'answer-btn selected incorrect';
+            } else {
+                classNames = 'answer-btn';
+            }
+        } else {
+            if (index === selectedAnswer) {
+                classNames = 'answer-btn selected';
+            } else {
+                classNames = 'answer-btn';
+            }
+        }
+
+        return classNames;
+    }
 
     // loop through the answers and style the one that is selected
     // set the selected answer on click
     var btns = [];
 
     var _loop = function _loop(i) {
-        console.log(i === correctAnswerIndex);
         btns.push(_react2.default.createElement(
             'button',
             {
                 key: 'answer' + i,
-                className: selectedAnswer === i ? 'answer-btn selected' : 'answer-btn',
+                className: applyClassNames(i),
                 onClick: function onClick() {
                     return handleClick(i);
                 }
@@ -4476,8 +4517,7 @@ function Question(props) {
             null,
             (0, _utils.decodeText)(questionData.question)
         ),
-        btns,
-        selectedAnswer
+        btns
     );
 }
 
@@ -4518,10 +4558,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 function Quiz() {
 
+    // settings for the API call
     var BASE_URL = 'https://opentdb.com/api.php';
     var amount = 5;
     var difficulty = 'easy';
     // * future feature considerations: set amount, difficulty, category
+
+    // state
 
     var _React$useState = _react2.default.useState([]),
         _React$useState2 = _slicedToArray(_React$useState, 2),
@@ -4540,20 +4583,34 @@ function Quiz() {
 
     var _React$useState7 = _react2.default.useState([]),
         _React$useState8 = _slicedToArray(_React$useState7, 2),
-        selectedAnswers = _React$useState8[0],
-        setSelectedAnswers = _React$useState8[1];
+        correctAnswers = _React$useState8[0],
+        setCorrectAnswers = _React$useState8[1];
 
-    var _React$useState9 = _react2.default.useState(false),
+    var _React$useState9 = _react2.default.useState([]),
         _React$useState10 = _slicedToArray(_React$useState9, 2),
-        finished = _React$useState10[0],
-        setFinished = _React$useState10[1];
+        selectedAnswers = _React$useState10[0],
+        setSelectedAnswers = _React$useState10[1];
 
-    var _React$useState11 = _react2.default.useState(null),
+    var _React$useState11 = _react2.default.useState(false),
         _React$useState12 = _slicedToArray(_React$useState11, 2),
-        score = _React$useState12[0],
-        setScore = _React$useState12[1];
+        finished = _React$useState12[0],
+        setFinished = _React$useState12[1];
 
-    console.log('Quiz selectedAnswers: ', selectedAnswers);
+    var _React$useState13 = _react2.default.useState(null),
+        _React$useState14 = _slicedToArray(_React$useState13, 2),
+        score = _React$useState14[0],
+        setScore = _React$useState14[1];
+
+    // test
+
+
+    var _React$useState15 = _react2.default.useState('answer-btn'),
+        _React$useState16 = _slicedToArray(_React$useState15, 2),
+        styles = _React$useState16[0],
+        setStyles = _React$useState16[1];
+
+    // get data from the API
+
 
     _react2.default.useEffect(function () {
         _axios2.default.get(BASE_URL + "?amount=" + amount + "&difficulty=" + difficulty + "&type=multiple").then(function (res) {
@@ -4564,6 +4621,14 @@ function Quiz() {
                 return questions;
             });
             setAllQuestions(newData);
+            // get the index for each correct answer in the shuffled array
+            setCorrectAnswers(function () {
+                var correctAnswerIndexes = [];
+                for (var i = 0; i < newData.length; i++) {
+                    correctAnswerIndexes.push(newData[i][1].shuffledAnswers.correctIndex);
+                }
+                return correctAnswerIndexes;
+            });
             setLoading(false);
         }).catch(function (err) {
             console.log('err: ', err);
@@ -4572,7 +4637,7 @@ function Quiz() {
         });
     }, []);
 
-    // send to the child component to get selections back for comparison
+    // when an answer is clicked it sends that index back to the Quiz component and updates the state for selectedAnswers
     function sendAnswer(questionId, selection) {
         console.log("Selected answer index for " + questionId + ": " + selection);
 
@@ -4584,16 +4649,16 @@ function Quiz() {
     function checkAnswers() {
         // get an array of all the correct answers
         // loop through the AllQuestions data
-        var correctAnswerIndexes = [];
-        for (var i = 0; i < allQuestions.length; i++) {
-            correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
-        }
+        // let correctAnswerIndexes = [];
+        // for (let i = 0; i < allQuestions.length; i++) {
+        //     correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
+        // }
 
         // check which answers were correct
         var scoreHolder = 0;
         var arr = [];
-        for (var _i = 0; _i < correctAnswerIndexes.length; _i++) {
-            if (Object.values(selectedAnswers)[_i] === correctAnswerIndexes[_i]) {
+        for (var i = 0; i < correctAnswers.length; i++) {
+            if (Object.values(selectedAnswers)[i] === correctAnswers[i]) {
                 arr.push(true);
                 scoreHolder++;
             } else {
@@ -4602,6 +4667,8 @@ function Quiz() {
             }
         }
         setScore(scoreHolder);
+        // set styles - 'answer-btn correct' if right or 'answer-btn incorrect' if wrong
+        // requires more looping...
         setFinished(true);
     }
 
@@ -4614,6 +4681,8 @@ function Quiz() {
     }
 
     // TODO: dynamically render question components from state
+    // if we put an array of components in state
+    // can we re-render them?
 
 
     return _react2.default.createElement(
@@ -4632,27 +4701,37 @@ function Quiz() {
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[0][1],
                     id: 'question0',
-                    sendAnswer: sendAnswer
+                    correct: correctAnswers[0],
+                    sendAnswer: sendAnswer,
+                    finished: finished
                 }),
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[1][1],
                     id: 'question1',
-                    sendAnswer: sendAnswer
+                    correct: correctAnswers[1],
+                    sendAnswer: sendAnswer,
+                    finished: finished
                 }),
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[2][1],
                     id: 'question2',
-                    sendAnswer: sendAnswer
+                    correct: correctAnswers[2],
+                    sendAnswer: sendAnswer,
+                    finished: finished
                 }),
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[3][1],
                     id: 'question3',
-                    sendAnswer: sendAnswer
+                    correct: correctAnswers[3],
+                    sendAnswer: sendAnswer,
+                    finished: finished
                 }),
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[4][1],
                     id: 'question4',
-                    sendAnswer: sendAnswer
+                    correct: correctAnswers[4],
+                    sendAnswer: sendAnswer,
+                    finished: finished
                 })
             ),
             _react2.default.createElement("br", null),

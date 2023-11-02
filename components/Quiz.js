@@ -5,20 +5,27 @@ import { shuffleAnswers } from './utils.js'
 
 export default function Quiz() {
 
+    // settings for the API call
     const BASE_URL = 'https://opentdb.com/api.php';
     const amount = 5;
     const difficulty = 'easy';
     // * future feature considerations: set amount, difficulty, category
 
+    // state
     const [allQuestions, setAllQuestions] = React.useState([]);
     const [error, setError] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
+
+    const [correctAnswers, setCorrectAnswers] = React.useState([]);
     const [selectedAnswers, setSelectedAnswers] = React.useState([]);
+
     const [finished, setFinished] = React.useState(false);
     const [score, setScore] = React.useState(null);
 
-    console.log('Quiz selectedAnswers: ',selectedAnswers);
+    // test
+    const [styles, setStyles] = React.useState('answer-btn');
 
+    // get data from the API
     React.useEffect( () => {
         axios.get(`${BASE_URL}?amount=${amount}&difficulty=${difficulty}&type=multiple`)
         .then( res => {
@@ -29,6 +36,14 @@ export default function Quiz() {
                 return questions;
             });
             setAllQuestions(newData);
+            // get the index for each correct answer in the shuffled array
+            setCorrectAnswers( () => {
+                let correctAnswerIndexes = [];
+                for (let i = 0; i < newData.length; i++) {
+                    correctAnswerIndexes.push(newData[i][1].shuffledAnswers.correctIndex);
+                }
+                return correctAnswerIndexes;
+            })
             setLoading(false);
         })
         .catch (err => {
@@ -40,7 +55,7 @@ export default function Quiz() {
 
     },[]);
 
-    // send to the child component to get selections back for comparison
+    // when an answer is clicked it sends that index back to the Quiz component and updates the state for selectedAnswers
     function sendAnswer(questionId, selection) {
         console.log(`Selected answer index for ${questionId}: ${selection}`)
 
@@ -55,16 +70,16 @@ export default function Quiz() {
     function checkAnswers() {
         // get an array of all the correct answers
         // loop through the AllQuestions data
-        let correctAnswerIndexes = [];
-        for (let i = 0; i < allQuestions.length; i++) {
-            correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
-        }
+        // let correctAnswerIndexes = [];
+        // for (let i = 0; i < allQuestions.length; i++) {
+        //     correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
+        // }
 
         // check which answers were correct
         let scoreHolder = 0;
         let arr = [];
-        for (let i = 0; i < correctAnswerIndexes.length; i++) {
-            if (Object.values(selectedAnswers)[i] === correctAnswerIndexes[i]) {
+        for (let i = 0; i < correctAnswers.length; i++) {
+            if (Object.values(selectedAnswers)[i] === correctAnswers[i]) {
                 arr.push(true);
                 scoreHolder++;
             } else {
@@ -73,6 +88,8 @@ export default function Quiz() {
             }
         }
         setScore(scoreHolder);
+        // set styles - 'answer-btn correct' if right or 'answer-btn incorrect' if wrong
+        // requires more looping...
         setFinished(true);
 
     }
@@ -82,6 +99,8 @@ export default function Quiz() {
     }
 
     // TODO: dynamically render question components from state
+    // if we put an array of components in state
+    // can we re-render them?
     
 
     return (
@@ -96,27 +115,37 @@ export default function Quiz() {
                     <Question 
                         data={allQuestions[0][1]} 
                         id={'question0'} 
+                        correct={correctAnswers[0]}
                         sendAnswer={sendAnswer} 
+                        finished={finished}
                     />
                     <Question 
                         data={allQuestions[1][1]} 
                         id={'question1'} 
+                        correct={correctAnswers[1]}
                         sendAnswer={sendAnswer} 
+                        finished={finished}
                     />
                     <Question 
                         data={allQuestions[2][1]} 
                         id={'question2'} 
+                        correct={correctAnswers[2]}
                         sendAnswer={sendAnswer} 
+                        finished={finished}
                     />
                     <Question 
                         data={allQuestions[3][1]} 
                         id={'question3'} 
+                        correct={correctAnswers[3]}
                         sendAnswer={sendAnswer} 
+                        finished={finished}
                     />
                     <Question 
                         data={allQuestions[4][1]} 
                         id={'question4'} 
+                        correct={correctAnswers[4]}
                         sendAnswer={sendAnswer} 
+                        finished={finished}
                     />
                     </div>
                     <br />

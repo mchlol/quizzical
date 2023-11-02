@@ -76,6 +76,14 @@ h3.question {
     background-color: var(--blue-grey);
 }
 
+.answer-btn.selected.correct {
+    background-color: var(--correct);
+}
+
+.answer-btn.selected.incorrect {
+    background-color: var(--incorrect);
+}
+
 label {
     font-size: 14px;
     background-color: inherit;
