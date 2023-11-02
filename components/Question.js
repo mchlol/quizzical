@@ -22,24 +22,11 @@ export default function Question(props) {
     };
 
     function applyClassNames(index) {
-        let classNames = 'answer-btn'; // applied regardless of state
+        let classNames;
         
-        // buttons are looped over below, and styles applied per this function
-        // we have access to the index of that button
-    
-        // if game is still in play finished will be false
-        // on click finished will be true
-        // so if finished, 
-        //   a selected button that is correct will be 'answer-btn selected correct'
-        //   a selected button that is incorrect will be 'answer-btn selected incorrect'
-        //   a button that is not selected will be 'answer-btn' // ! duplicated
-        // if NOT finished
-        //   a selected button will be 'answer-btn selected'
-        //   a button not selected will still just be 'answer-btn' // ! duplicated
-
         if (finished) {
-            // selected and correct
-            if (index === selectedAnswer && selectedAnswer === correctAnswerIndex) {
+            // selected and correct OR just the correct answer
+            if (index === selectedAnswer && selectedAnswer === correctAnswerIndex || index === correctAnswerIndex) {
                 classNames = 'answer-btn selected correct';
             // selected and incorrect
             } else if (index === selectedAnswer && selectedAnswer !== correctAnswerIndex) {
