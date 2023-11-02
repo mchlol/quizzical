@@ -68,12 +68,6 @@ export default function Quiz() {
     } // sendAnswer
 
     function checkAnswers() {
-        // get an array of all the correct answers
-        // loop through the AllQuestions data
-        // let correctAnswerIndexes = [];
-        // for (let i = 0; i < allQuestions.length; i++) {
-        //     correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
-        // }
 
         // check which answers were correct
         let scoreHolder = 0;
@@ -109,9 +103,8 @@ export default function Quiz() {
             loading 
             ? <em>Loading...</em>
             : 
-                <div> 
-                {/* This component needs to be re-rendered on finished with new styles */}
-                    <div>
+                <div className="flex-centered"> 
+                    <div className="questions-container">
                     <Question 
                         data={allQuestions[0][1]} 
                         id={'question0'} 
@@ -119,6 +112,7 @@ export default function Quiz() {
                         sendAnswer={sendAnswer} 
                         finished={finished}
                     />
+                    <hr />
                     <Question 
                         data={allQuestions[1][1]} 
                         id={'question1'} 
@@ -126,6 +120,7 @@ export default function Quiz() {
                         sendAnswer={sendAnswer} 
                         finished={finished}
                     />
+                    <hr />
                     <Question 
                         data={allQuestions[2][1]} 
                         id={'question2'} 
@@ -133,6 +128,7 @@ export default function Quiz() {
                         sendAnswer={sendAnswer} 
                         finished={finished}
                     />
+                    <hr />
                     <Question 
                         data={allQuestions[3][1]} 
                         id={'question3'} 
@@ -140,6 +136,7 @@ export default function Quiz() {
                         sendAnswer={sendAnswer} 
                         finished={finished}
                     />
+                    <hr />
                     <Question 
                         data={allQuestions[4][1]} 
                         id={'question4'} 
@@ -154,10 +151,10 @@ export default function Quiz() {
                         ?  
                             <div>
                                 <p>You scored {score}/5 correct answers</p>
-                                <button>Play Again</button>
+                                <button className="submit-btn">Play Again</button>
                             </div>
                         : 
-                            <button onClick={checkAnswers}>Check answers</button>
+                            <button className="submit-btn" onClick={checkAnswers}>Check answers</button>
                     }
                     
                 </div>

@@ -2607,11 +2607,20 @@ function App() {
         "div",
         null,
         start ? _react2.default.createElement(_Quiz2.default, null) : _react2.default.createElement(
-            "button",
-            { onClick: function onClick() {
-                    return setStart(true);
-                } },
-            "Start Quiz"
+            "div",
+            { className: "flex-centered" },
+            _react2.default.createElement(
+                "h1",
+                null,
+                "Quizzical"
+            ),
+            _react2.default.createElement(
+                "button",
+                { className: "submit-btn", onClick: function onClick() {
+                        return setStart(true);
+                    } },
+                "Start Quiz"
+            )
         )
     );
 }
@@ -4445,6 +4454,10 @@ function Question(props) {
         finished = _React$useState10[0],
         setFinished = _React$useState10[1];
 
+    _react2.default.useEffect(function () {
+        setFinished(props.finished);
+    }, [props.finished]);
+
     function handleClick(selected) {
         setSelectedAnswer(selected);
         props.sendAnswer(props.id, selected);
@@ -4517,7 +4530,11 @@ function Question(props) {
             null,
             (0, _utils.decodeText)(questionData.question)
         ),
-        btns
+        _react2.default.createElement(
+            'div',
+            { className: 'answers-container' },
+            btns
+        )
     );
 }
 
@@ -4647,12 +4664,6 @@ function Quiz() {
     } // sendAnswer
 
     function checkAnswers() {
-        // get an array of all the correct answers
-        // loop through the AllQuestions data
-        // let correctAnswerIndexes = [];
-        // for (let i = 0; i < allQuestions.length; i++) {
-        //     correctAnswerIndexes.push(allQuestions[i][1].shuffledAnswers.correctIndex);
-        // }
 
         // check which answers were correct
         var scoreHolder = 0;
@@ -4694,10 +4705,10 @@ function Quiz() {
             "Loading..."
         ) : _react2.default.createElement(
             "div",
-            null,
+            { className: "flex-centered" },
             _react2.default.createElement(
                 "div",
-                null,
+                { className: "questions-container" },
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[0][1],
                     id: 'question0',
@@ -4705,6 +4716,7 @@ function Quiz() {
                     sendAnswer: sendAnswer,
                     finished: finished
                 }),
+                _react2.default.createElement("hr", null),
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[1][1],
                     id: 'question1',
@@ -4712,6 +4724,7 @@ function Quiz() {
                     sendAnswer: sendAnswer,
                     finished: finished
                 }),
+                _react2.default.createElement("hr", null),
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[2][1],
                     id: 'question2',
@@ -4719,6 +4732,7 @@ function Quiz() {
                     sendAnswer: sendAnswer,
                     finished: finished
                 }),
+                _react2.default.createElement("hr", null),
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[3][1],
                     id: 'question3',
@@ -4726,6 +4740,7 @@ function Quiz() {
                     sendAnswer: sendAnswer,
                     finished: finished
                 }),
+                _react2.default.createElement("hr", null),
                 _react2.default.createElement(_Question2.default, {
                     data: allQuestions[4][1],
                     id: 'question4',
@@ -4747,12 +4762,12 @@ function Quiz() {
                 ),
                 _react2.default.createElement(
                     "button",
-                    null,
+                    { className: "submit-btn" },
                     "Play Again"
                 )
             ) : _react2.default.createElement(
                 "button",
-                { onClick: checkAnswers },
+                { className: "submit-btn", onClick: checkAnswers },
                 "Check answers"
             )
         )

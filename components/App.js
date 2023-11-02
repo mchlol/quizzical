@@ -11,9 +11,13 @@ export default function App() {
         <div>
         { start ? 
         <Quiz />
-        : <button onClick={() => setStart(true)}>
-                Start Quiz
-            </button>
+        : 
+            <div className="flex-centered">
+            <h1>Quizzical</h1>
+            <button className="submit-btn" onClick={() => setStart(true)}>
+                    Start Quiz
+                </button>
+            </div>
         }
             
         </div>
