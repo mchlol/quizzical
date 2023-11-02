@@ -57,8 +57,8 @@ export default function Quiz() {
 
     // when an answer is clicked it sends that index back to the Quiz component and updates the state for selectedAnswers
     function sendAnswer(questionId, selection) {
-        console.log(`Selected answer index for ${questionId}: ${selection}`)
 
+        // updates state for the selected answers, and if the questionId is already present, overwrites its value
         setSelectedAnswers( prevSelectedAnswers => {
             return {
                 ...prevSelectedAnswers,
@@ -82,26 +82,27 @@ export default function Quiz() {
             }
         }
         setScore(scoreHolder);
-        // set styles - 'answer-btn correct' if right or 'answer-btn incorrect' if wrong
-        // requires more looping...
         setFinished(true);
-
     }
+
+    function resetGame() {
+        console.log('user clicked play again button, what do we do?!')
+    }
+    
 
     if (error) {
         return <p>Could not retrieve questions. Please try again.</p>
     }
 
-    // TODO: dynamically render question components from state
-    // if we put an array of components in state
-    // can we re-render them?
-    
 
     return (
         <div>
         {
             loading 
-            ? <em>Loading...</em>
+            ? 
+                <div className="flex-centered loading-div">
+                    <em>Loading...</em>
+                </div>
             : 
                 <div className="flex-centered"> 
                     <div className="questions-container">
@@ -150,11 +151,14 @@ export default function Quiz() {
                         finished 
                         ?  
                             <div>
-                                <p>You scored {score}/5 correct answers</p>
-                                <button className="submit-btn">Play Again</button>
+                            {/* // TODO: hook up play again button */}
+                                <p className="end-p">You scored {score}/5 correct answers</p>
+                                <button onClick={resetGame} className="submit-btn">Play Again</button>
                             </div>
                         : 
-                            <button className="submit-btn" onClick={checkAnswers}>Check answers</button>
+                            <div>
+                                <button className="submit-btn" onClick={checkAnswers}>Check answers</button>
+                            </div>
                     }
                     
                 </div>

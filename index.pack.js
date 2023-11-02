@@ -4464,24 +4464,11 @@ function Question(props) {
     };
 
     function applyClassNames(index) {
-        var classNames = 'answer-btn'; // applied regardless of state
-
-        // buttons are looped over below, and styles applied per this function
-        // we have access to the index of that button
-
-        // if game is still in play finished will be false
-        // on click finished will be true
-        // so if finished, 
-        //   a selected button that is correct will be 'answer-btn selected correct'
-        //   a selected button that is incorrect will be 'answer-btn selected incorrect'
-        //   a button that is not selected will be 'answer-btn' // ! duplicated
-        // if NOT finished
-        //   a selected button will be 'answer-btn selected'
-        //   a button not selected will still just be 'answer-btn' // ! duplicated
+        var classNames = void 0;
 
         if (finished) {
-            // selected and correct
-            if (index === selectedAnswer && selectedAnswer === correctAnswerIndex) {
+            // selected and correct OR just the correct answer
+            if (index === selectedAnswer && selectedAnswer === correctAnswerIndex || index === correctAnswerIndex) {
                 classNames = 'answer-btn selected correct';
                 // selected and incorrect
             } else if (index === selectedAnswer && selectedAnswer !== correctAnswerIndex) {
@@ -4656,8 +4643,8 @@ function Quiz() {
 
     // when an answer is clicked it sends that index back to the Quiz component and updates the state for selectedAnswers
     function sendAnswer(questionId, selection) {
-        console.log("Selected answer index for " + questionId + ": " + selection);
 
+        // updates state for the selected answers, and if the questionId is already present, overwrites its value
         setSelectedAnswers(function (prevSelectedAnswers) {
             return _extends({}, prevSelectedAnswers, _defineProperty({}, questionId, selection));
         });
@@ -4678,9 +4665,11 @@ function Quiz() {
             }
         }
         setScore(scoreHolder);
-        // set styles - 'answer-btn correct' if right or 'answer-btn incorrect' if wrong
-        // requires more looping...
         setFinished(true);
+    }
+
+    function resetGame() {
+        console.log('user clicked play again button, what do we do?!');
     }
 
     if (error) {
@@ -4691,18 +4680,17 @@ function Quiz() {
         );
     }
 
-    // TODO: dynamically render question components from state
-    // if we put an array of components in state
-    // can we re-render them?
-
-
     return _react2.default.createElement(
         "div",
         null,
         loading ? _react2.default.createElement(
-            "em",
-            null,
-            "Loading..."
+            "div",
+            { className: "flex-centered loading-div" },
+            _react2.default.createElement(
+                "em",
+                null,
+                "Loading..."
+            )
         ) : _react2.default.createElement(
             "div",
             { className: "flex-centered" },
@@ -4755,20 +4743,24 @@ function Quiz() {
                 null,
                 _react2.default.createElement(
                     "p",
-                    null,
+                    { className: "end-p" },
                     "You scored ",
                     score,
                     "/5 correct answers"
                 ),
                 _react2.default.createElement(
                     "button",
-                    { className: "submit-btn" },
+                    { onClick: resetGame, className: "submit-btn" },
                     "Play Again"
                 )
             ) : _react2.default.createElement(
-                "button",
-                { className: "submit-btn", onClick: checkAnswers },
-                "Check answers"
+                "div",
+                null,
+                _react2.default.createElement(
+                    "button",
+                    { className: "submit-btn", onClick: checkAnswers },
+                    "Check answers"
+                )
             )
         )
     );
