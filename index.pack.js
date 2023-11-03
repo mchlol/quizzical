@@ -2615,6 +2615,11 @@ function App() {
                 "Quizzical"
             ),
             _react2.default.createElement(
+                "p",
+                null,
+                "Test your knowledge!"
+            ),
+            _react2.default.createElement(
                 "button",
                 { className: "submit-btn", onClick: function onClick() {
                         return setStart(true);
@@ -4651,9 +4656,13 @@ function Quiz(props) {
         var scoreHolder = 0;
         var arr = [];
         for (var i = 0; i < correctAnswers.length; i++) {
+            // ! debugging incorrect score
+            // console.log(Object.keys(selectedAnswers)[i], Object.values(selectedAnswers)[i]);
+            // console.log('Correct: ', correctAnswers[i]);
+
             if (Object.values(selectedAnswers)[i] === correctAnswers[i]) {
                 arr.push(true);
-                scoreHolder++;
+                scoreHolder = scoreHolder + 1;
             } else {
                 arr.push(false);
                 // if any question was not answered its value will be just be false
@@ -4728,10 +4737,9 @@ function Quiz(props) {
                     finished: finished
                 })
             ),
-            _react2.default.createElement("br", null),
             finished ? _react2.default.createElement(
                 "div",
-                null,
+                { className: "end-div" },
                 _react2.default.createElement(
                     "p",
                     { className: "end-p" },

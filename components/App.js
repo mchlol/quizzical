@@ -16,6 +16,7 @@ export default function App() {
             : 
                 <div className="flex-centered">
                 <h1>Quizzical</h1>
+                <p>Test your knowledge!</p>
                 <button className="submit-btn" onClick={() => setStart(true)}>
                         Start Quiz
                     </button>

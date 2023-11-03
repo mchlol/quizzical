@@ -72,6 +72,7 @@ button {
     color: var(--light-grey);
     font-weight: 600;
     padding: 1em 1.5em;
+    margin: 0.5em 0;
 }
 
 .loading-div {
@@ -82,9 +83,17 @@ button {
     height: 550px;
 }
 
+.end-div {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    width: 50%;
+}
+
 .end-p {
     display: inline-block;
-    margin-right: 0.5em;
 }
 
 .answer-btn.selected {
