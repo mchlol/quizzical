@@ -2,6 +2,8 @@ import React from "react";
 import axios, { all } from "axios";
 import Question from "./Question";
 import { shuffleAnswers } from './utils.js'
+import Confetti from 'react-confetti'
+
 
 export default function Quiz(props) {
 
@@ -161,7 +163,8 @@ export default function Quiz(props) {
                                 {
                                     score === 5
                                     ?
-                                        <p className="end-p">YOU GOT THEM ALL RIGHT! YOU ARE AMAZING!</p>
+                                        <p className="end-p">YOU GOT THEM ALL RIGHT! YOU ARE AMAZING!
+                                        <Confetti /></p>
                                     :
                                         <p className="end-p">You scored {score}/5 correct answers</p>
                                 }
