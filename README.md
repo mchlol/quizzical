@@ -2,6 +2,10 @@
 
 Final project for React Basics at [Scrimba](scrimba.com)  
 
+## Design
+
+
+
 ## Resources
 
 - [Pill radio buttons](https://codepen.io/rstacruz/pen/zWXJGj) (when using a form and inputs)
