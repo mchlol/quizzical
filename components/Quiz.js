@@ -3,7 +3,7 @@ import axios, { all } from "axios";
 import Question from "./Question";
 import { shuffleAnswers } from './utils.js'
 
-export default function Quiz() {
+export default function Quiz(props) {
 
     // settings for the API call
     const BASE_URL = 'https://opentdb.com/api.php';
@@ -22,8 +22,11 @@ export default function Quiz() {
     const [finished, setFinished] = React.useState(false);
     const [score, setScore] = React.useState(null);
 
-    // test
-    const [styles, setStyles] = React.useState('answer-btn');
+    const [start, setStart] = React.useState(props.start);
+
+    React.useEffect( () => {
+        setStart(props.start);
+    },[props.start])
 
     // get data from the API
     React.useEffect( () => {
@@ -53,9 +56,9 @@ export default function Quiz() {
 
         })
 
-    },[]);
+    },[start]);
 
-    // when an answer is clicked it sends that index back to the Quiz component and updates the state for selectedAnswers
+    // when an answer is clicked within Question components, it sends that index back to the Quiz component and updates the state for selectedAnswers
     function sendAnswer(questionId, selection) {
 
         // updates state for the selected answers, and if the questionId is already present, overwrites its value
@@ -73,9 +76,13 @@ export default function Quiz() {
         let scoreHolder = 0;
         let arr = [];
         for (let i = 0; i < correctAnswers.length; i++) {
+            // ! debugging incorrect score
+            // console.log(Object.keys(selectedAnswers)[i], Object.values(selectedAnswers)[i]);
+            // console.log('Correct: ', correctAnswers[i]);
+
             if (Object.values(selectedAnswers)[i] === correctAnswers[i]) {
                 arr.push(true);
-                scoreHolder++;
+                scoreHolder = scoreHolder + 1;
             } else {
                 arr.push(false)
                 // if any question was not answered its value will be just be false
@@ -86,9 +93,10 @@ export default function Quiz() {
     }
 
     function resetGame() {
-        console.log('user clicked play again button, what do we do?!')
+        props.setStart(false);
     }
-    
+
+ 
 
     if (error) {
         return <p>Could not retrieve questions. Please try again.</p>
@@ -100,9 +108,7 @@ export default function Quiz() {
         {
             loading 
             ? 
-                <div className="flex-centered loading-div">
                     <em>Loading...</em>
-                </div>
             : 
                 <div className="flex-centered"> 
                     <div className="questions-container">
@@ -146,17 +152,15 @@ export default function Quiz() {
                         finished={finished}
                     />
                     </div>
-                    <br />
                     {
                         finished 
                         ?  
-                            <div>
-                            {/* // TODO: hook up play again button */}
+                            <div className="end-div">
                                 <p className="end-p">You scored {score}/5 correct answers</p>
                                 <button onClick={resetGame} className="submit-btn">Play Again</button>
                             </div>
                         : 
-                            <div>
+                            <div className="flex-centered">
                                 <button className="submit-btn" onClick={checkAnswers}>Check answers</button>
                             </div>
                     }

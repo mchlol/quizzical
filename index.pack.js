@@ -2606,13 +2606,18 @@ function App() {
     return _react2.default.createElement(
         "div",
         null,
-        start ? _react2.default.createElement(_Quiz2.default, null) : _react2.default.createElement(
+        start ? _react2.default.createElement(_Quiz2.default, { start: start, setStart: setStart }) : _react2.default.createElement(
             "div",
             { className: "flex-centered" },
             _react2.default.createElement(
                 "h1",
                 null,
                 "Quizzical"
+            ),
+            _react2.default.createElement(
+                "p",
+                null,
+                "Test your knowledge!"
             ),
             _react2.default.createElement(
                 "button",
@@ -4413,8 +4418,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-// import {decode} from 'html-entities';
-
 
 exports.default = Question;
 
@@ -4425,8 +4428,6 @@ var _react2 = _interopRequireDefault(_react);
 var _utils = __webpack_require__(21);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// import Answer from "./Answer";
 
 function Question(props) {
     var _React$useState = _react2.default.useState(props.data),
@@ -4474,7 +4475,7 @@ function Question(props) {
             } else if (index === selectedAnswer && selectedAnswer !== correctAnswerIndex) {
                 classNames = 'answer-btn selected incorrect';
             } else {
-                classNames = 'answer-btn';
+                classNames = 'answer-btn finished';
             }
         } else {
             if (index === selectedAnswer) {
@@ -4560,7 +4561,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function Quiz() {
+function Quiz(props) {
 
     // settings for the API call
     var BASE_URL = 'https://opentdb.com/api.php';
@@ -4605,17 +4606,16 @@ function Quiz() {
         score = _React$useState14[0],
         setScore = _React$useState14[1];
 
-    // test
-
-
-    var _React$useState15 = _react2.default.useState('answer-btn'),
+    var _React$useState15 = _react2.default.useState(props.start),
         _React$useState16 = _slicedToArray(_React$useState15, 2),
-        styles = _React$useState16[0],
-        setStyles = _React$useState16[1];
+        start = _React$useState16[0],
+        setStart = _React$useState16[1];
+
+    _react2.default.useEffect(function () {
+        setStart(props.start);
+    }, [props.start]);
 
     // get data from the API
-
-
     _react2.default.useEffect(function () {
         _axios2.default.get(BASE_URL + "?amount=" + amount + "&difficulty=" + difficulty + "&type=multiple").then(function (res) {
             var results = res.data.results;
@@ -4639,9 +4639,9 @@ function Quiz() {
             setError(err);
             setLoading(false);
         });
-    }, []);
+    }, [start]);
 
-    // when an answer is clicked it sends that index back to the Quiz component and updates the state for selectedAnswers
+    // when an answer is clicked within Question components, it sends that index back to the Quiz component and updates the state for selectedAnswers
     function sendAnswer(questionId, selection) {
 
         // updates state for the selected answers, and if the questionId is already present, overwrites its value
@@ -4656,9 +4656,13 @@ function Quiz() {
         var scoreHolder = 0;
         var arr = [];
         for (var i = 0; i < correctAnswers.length; i++) {
+            // ! debugging incorrect score
+            // console.log(Object.keys(selectedAnswers)[i], Object.values(selectedAnswers)[i]);
+            // console.log('Correct: ', correctAnswers[i]);
+
             if (Object.values(selectedAnswers)[i] === correctAnswers[i]) {
                 arr.push(true);
-                scoreHolder++;
+                scoreHolder = scoreHolder + 1;
             } else {
                 arr.push(false);
                 // if any question was not answered its value will be just be false
@@ -4669,7 +4673,7 @@ function Quiz() {
     }
 
     function resetGame() {
-        console.log('user clicked play again button, what do we do?!');
+        props.setStart(false);
     }
 
     if (error) {
@@ -4684,13 +4688,9 @@ function Quiz() {
         "div",
         null,
         loading ? _react2.default.createElement(
-            "div",
-            { className: "flex-centered loading-div" },
-            _react2.default.createElement(
-                "em",
-                null,
-                "Loading..."
-            )
+            "em",
+            null,
+            "Loading..."
         ) : _react2.default.createElement(
             "div",
             { className: "flex-centered" },
@@ -4737,10 +4737,9 @@ function Quiz() {
                     finished: finished
                 })
             ),
-            _react2.default.createElement("br", null),
             finished ? _react2.default.createElement(
                 "div",
-                null,
+                { className: "end-div" },
                 _react2.default.createElement(
                     "p",
                     { className: "end-p" },
@@ -4755,7 +4754,7 @@ function Quiz() {
                 )
             ) : _react2.default.createElement(
                 "div",
-                null,
+                { className: "flex-centered" },
                 _react2.default.createElement(
                     "button",
                     { className: "submit-btn", onClick: checkAnswers },
