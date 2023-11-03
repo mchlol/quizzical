@@ -2580,8 +2580,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-// import Splash from "./Splash";
-
 
 exports.default = App;
 
@@ -2594,8 +2592,6 @@ var _Quiz = __webpack_require__(52);
 var _Quiz2 = _interopRequireDefault(_Quiz);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// import Question from "./Question";
 
 function App() {
     var _React$useState = _react2.default.useState(false),
@@ -4624,15 +4620,21 @@ function Quiz(props) {
                 questions[1].shuffledAnswers = (0, _utils.shuffleAnswers)(questions[1].incorrect_answers, questions[1].correct_answer);
                 return questions;
             });
+
             setAllQuestions(newData);
+
             // get the index for each correct answer in the shuffled array
-            setCorrectAnswers(function () {
-                var correctAnswerIndexes = [];
-                for (var i = 0; i < newData.length; i++) {
-                    correctAnswerIndexes.push(newData[i][1].shuffledAnswers.correctIndex);
-                }
-                return correctAnswerIndexes;
-            });
+
+            var _loop = function _loop(i) {
+                setCorrectAnswers(function (prevCorrectAnswers) {
+                    return _extends({}, prevCorrectAnswers, _defineProperty({}, "question" + i, newData[i][1].shuffledAnswers.correctIndex));
+                });
+            };
+
+            for (var i = 0; i < newData.length; i++) {
+                _loop(i);
+            }
+
             setLoading(false);
         }).catch(function (err) {
             console.log('err: ', err);
@@ -4651,16 +4653,14 @@ function Quiz(props) {
     } // sendAnswer
 
     function checkAnswers() {
+        console.log('checking answers');
 
         // check which answers were correct
         var scoreHolder = 0;
         var arr = [];
-        for (var i = 0; i < correctAnswers.length; i++) {
-            // ! debugging incorrect score
-            // console.log(Object.keys(selectedAnswers)[i], Object.values(selectedAnswers)[i]);
-            // console.log('Correct: ', correctAnswers[i]);
+        for (var i = 0; i < Object.keys(correctAnswers).length; i++) {
 
-            if (Object.values(selectedAnswers)[i] === correctAnswers[i]) {
+            if (Object.values(selectedAnswers)[i] === Object.values(correctAnswers)[i]) {
                 arr.push(true);
                 scoreHolder = scoreHolder + 1;
             } else {
@@ -4668,6 +4668,7 @@ function Quiz(props) {
                 // if any question was not answered its value will be just be false
             }
         }
+
         setScore(scoreHolder);
         setFinished(true);
     }

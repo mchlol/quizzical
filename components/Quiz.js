@@ -24,6 +24,7 @@ export default function Quiz(props) {
 
     const [start, setStart] = React.useState(props.start);
 
+
     React.useEffect( () => {
         setStart(props.start);
     },[props.start])
@@ -38,15 +39,19 @@ export default function Quiz(props) {
                 questions[1].shuffledAnswers = shuffleAnswers(questions[1].incorrect_answers, questions[1].correct_answer);
                 return questions;
             });
+
             setAllQuestions(newData);
+
             // get the index for each correct answer in the shuffled array
-            setCorrectAnswers( () => {
-                let correctAnswerIndexes = [];
-                for (let i = 0; i < newData.length; i++) {
-                    correctAnswerIndexes.push(newData[i][1].shuffledAnswers.correctIndex);
-                }
-                return correctAnswerIndexes;
-            })
+            for (let i = 0; i < newData.length; i++) {
+                setCorrectAnswers( prevCorrectAnswers => {
+                    return {
+                        ...prevCorrectAnswers,
+                        [`question${i}`]: newData[i][1].shuffledAnswers.correctIndex
+                    }
+                })
+            }
+            
             setLoading(false);
         })
         .catch (err => {
@@ -71,16 +76,14 @@ export default function Quiz(props) {
     } // sendAnswer
 
     function checkAnswers() {
+        console.log('checking answers')
 
         // check which answers were correct
         let scoreHolder = 0;
         let arr = [];
-        for (let i = 0; i < correctAnswers.length; i++) {
-            // ! debugging incorrect score
-            // console.log(Object.keys(selectedAnswers)[i], Object.values(selectedAnswers)[i]);
-            // console.log('Correct: ', correctAnswers[i]);
+        for (let i = 0; i < Object.keys(correctAnswers).length; i++) {
 
-            if (Object.values(selectedAnswers)[i] === correctAnswers[i]) {
+            if (Object.values(selectedAnswers)[i] === Object.values(correctAnswers)[i]) {
                 arr.push(true);
                 scoreHolder = scoreHolder + 1;
             } else {
@@ -88,6 +91,7 @@ export default function Quiz(props) {
                 // if any question was not answered its value will be just be false
             }
         }
+
         setScore(scoreHolder);
         setFinished(true);
     }
