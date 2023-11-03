@@ -2606,7 +2606,7 @@ function App() {
     return _react2.default.createElement(
         "div",
         null,
-        start ? _react2.default.createElement(_Quiz2.default, null) : _react2.default.createElement(
+        start ? _react2.default.createElement(_Quiz2.default, { start: start, setStart: setStart }) : _react2.default.createElement(
             "div",
             { className: "flex-centered" },
             _react2.default.createElement(
@@ -4556,7 +4556,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function Quiz() {
+function Quiz(props) {
 
     // settings for the API call
     var BASE_URL = 'https://opentdb.com/api.php';
@@ -4601,14 +4601,16 @@ function Quiz() {
         score = _React$useState14[0],
         setScore = _React$useState14[1];
 
-    var _React$useState15 = _react2.default.useState(false),
+    var _React$useState15 = _react2.default.useState(props.start),
         _React$useState16 = _slicedToArray(_React$useState15, 2),
-        reset = _React$useState16[0],
-        setReset = _React$useState16[1];
+        start = _React$useState16[0],
+        setStart = _React$useState16[1];
+
+    _react2.default.useEffect(function () {
+        setStart(props.start);
+    }, [props.start]);
 
     // get data from the API
-
-
     _react2.default.useEffect(function () {
         _axios2.default.get(BASE_URL + "?amount=" + amount + "&difficulty=" + difficulty + "&type=multiple").then(function (res) {
             var results = res.data.results;
@@ -4632,7 +4634,7 @@ function Quiz() {
             setError(err);
             setLoading(false);
         });
-    }, []);
+    }, [start]);
 
     // when an answer is clicked within Question components, it sends that index back to the Quiz component and updates the state for selectedAnswers
     function sendAnswer(questionId, selection) {
@@ -4662,13 +4664,8 @@ function Quiz() {
     }
 
     function resetGame() {
-        console.log('user clicked play again button, what do we do?!');
-        setReset(true);
+        props.setStart(false);
     }
-
-    _react2.default.useEffect(function () {
-        console.log('useEffect for reset running...');
-    }, [reset]);
 
     if (error) {
         return _react2.default.createElement(

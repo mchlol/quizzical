@@ -3,7 +3,7 @@ import axios, { all } from "axios";
 import Question from "./Question";
 import { shuffleAnswers } from './utils.js'
 
-export default function Quiz() {
+export default function Quiz(props) {
 
     // settings for the API call
     const BASE_URL = 'https://opentdb.com/api.php';
@@ -21,7 +21,12 @@ export default function Quiz() {
 
     const [finished, setFinished] = React.useState(false);
     const [score, setScore] = React.useState(null);
-    const [reset, setReset] = React.useState(false);
+
+    const [start, setStart] = React.useState(props.start);
+
+    React.useEffect( () => {
+        setStart(props.start);
+    },[props.start])
 
     // get data from the API
     React.useEffect( () => {
@@ -51,7 +56,7 @@ export default function Quiz() {
 
         })
 
-    },[]);
+    },[start]);
 
     // when an answer is clicked within Question components, it sends that index back to the Quiz component and updates the state for selectedAnswers
     function sendAnswer(questionId, selection) {
@@ -84,14 +89,10 @@ export default function Quiz() {
     }
 
     function resetGame() {
-        console.log('user clicked play again button, what do we do?!')
-        setReset(true);
+        props.setStart(false);
     }
 
-    React.useEffect( () => {
-        console.log('useEffect for reset running...')
-    },[reset])
-    
+ 
 
     if (error) {
         return <p>Could not retrieve questions. Please try again.</p>

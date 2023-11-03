@@ -12,7 +12,7 @@ export default function App() {
         { 
             start 
             ? 
-                <Quiz />
+                <Quiz start={start} setStart={setStart}/>
             : 
                 <div className="flex-centered">
                 <h1>Quizzical</h1>
