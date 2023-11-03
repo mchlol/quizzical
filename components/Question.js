@@ -1,8 +1,5 @@
 import React from "react";
-// import {decode} from 'html-entities';
 import { decodeText } from './utils.js'
-
-// import Answer from "./Answer";
 
 export default function Question(props) {
 
@@ -32,7 +29,7 @@ export default function Question(props) {
             } else if (index === selectedAnswer && selectedAnswer !== correctAnswerIndex) {
                 classNames = 'answer-btn selected incorrect';
             } else {
-                classNames = 'answer-btn';
+                classNames = 'answer-btn finished';
             }
         } else {
             if (index === selectedAnswer) {
