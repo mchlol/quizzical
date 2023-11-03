@@ -1,7 +1,5 @@
 import React from "react";
-// import Splash from "./Splash";
 import Quiz from "./Quiz";
-// import Question from "./Question";
 
 export default function App() {
 
