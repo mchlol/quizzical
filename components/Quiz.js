@@ -76,16 +76,14 @@ export default function Quiz(props) {
     } // sendAnswer
 
     function checkAnswers() {
-        console.log('checking answers')
 
-        // check which answers were correct
         let scoreHolder = 0;
         let arr = [];
         for (let i = 0; i < Object.keys(correctAnswers).length; i++) {
 
             if (Object.values(selectedAnswers)[i] === Object.values(correctAnswers)[i]) {
                 arr.push(true);
-                scoreHolder = scoreHolder + 1;
+                scoreHolder++;
             } else {
                 arr.push(false)
                 // if any question was not answered its value will be just be false
@@ -160,7 +158,13 @@ export default function Quiz(props) {
                         finished 
                         ?  
                             <div className="end-div">
-                                <p className="end-p">You scored {score}/5 correct answers</p>
+                                {
+                                    score === 5
+                                    ?
+                                        <p className="end-p">YOU GOT THEM ALL RIGHT! YOU ARE AMAZING!</p>
+                                    :
+                                        <p className="end-p">You scored {score}/5 correct answers</p>
+                                }
                                 <button onClick={resetGame} className="submit-btn">Play Again</button>
                             </div>
                         : 
