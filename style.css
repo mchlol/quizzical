@@ -29,6 +29,20 @@ body {
     align-items: center;
 }
 
+.blob-large {
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    z-index: -1;
+}
+
+.blob-small {
+    position: absolute;
+    bottom: -100px;
+    left: -150px;
+    z-index: -1;
+}
+
 .questions-container {
     max-width: 80%;
     margin: 2em 1em;
@@ -89,7 +103,7 @@ button {
     justify-content: space-around;
     align-items: center;
     text-align: center;
-    width: 50%;
+    gap: 1em;
 }
 
 .end-p {
@@ -113,10 +127,14 @@ button {
 }
 
 .answer-btn {
-    font-size: 14px;
+    font-size: 10px;
     background-color: inherit;
     color: var(--dark-blue);
     border: 1px solid var(--blue);
+}
+
+.answer-btn:hover {
+    background-color: var(--yellow);
 }
 
 .answer-btn.finished {
