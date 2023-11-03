@@ -60,7 +60,7 @@ export default function Question(props) {
 
     return (
         <div>
-            <h3>{decodeText(questionData.question)}</h3>
+            <h3 className="question">{decodeText(questionData.question)}</h3>
 
             <div className="answers-container">
                 {btns}
